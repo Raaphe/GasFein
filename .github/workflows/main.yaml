@@ -1,10 +1,14 @@
 name: Automate Contrib in README
 
 on:
-  push:
-    branches:
-      - main
-      - develop
+    push:
+        branches:
+            - main
+            - develop
+    pull_request:
+        branches:
+            - main
+            - develop
 jobs:
   contrib-readme-job:
     runs-on: ubuntu-latest
@@ -15,5 +19,8 @@ jobs:
     steps:
       - name: Contribute List
         uses: Raaphe/GasFein@develop
+        with:
+            readme_path: "README.md"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
