@@ -19,6 +19,13 @@ Thanks to these amazing contributors:
             <br />
             <sub><b>Raph</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/Schn777">
+            <img src="https://avatars.githubusercontent.com/u/113941848?v=4" width="100;" alt="Schn777"/>
+            <br />
+            <sub><b>Schn777</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
