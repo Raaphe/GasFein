@@ -1,12 +1,14 @@
-# GasFein b=o8 b!o8
+# GasFein 
 
 This is an app for finding the best gas prices near you!
 
 #### Get Started
 
-## Contributors b(
+## Contributors
 
 Thanks to these amazing contributors:
+
+#### Technologies Used
 
 <!-- readme: contributors -start --> 
 <table>
@@ -20,5 +22,3 @@ Thanks to these amazing contributors:
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
-
-#### Technologies Used
