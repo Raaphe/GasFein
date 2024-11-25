@@ -1,17 +1,18 @@
-on:
-    push:
-        branches:
-            - main
+name: Automate Contrib in README
 
+on:
+  push:
+    branches:
+      - main
 jobs:
-    contrib-readme-job:
-        runs-on: ubuntu-latest
-        name: A job to automate contrib in readme
-        permissions:
-          contents: write
-          pull-requests: write
-        steps:
-            - name: Contribute List
-              uses: Raaphe/GasFein
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  contrib-readme-job:
+    runs-on: ubuntu-latest
+    name: A job to automate contrib in readme
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Contribute List
+        uses: Raaphe/GasFein@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
