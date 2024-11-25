@@ -1,26 +1,24 @@
-name: Automate Contrib in README
+name: Update Contributors
 
 on:
-    push:
-        branches:
-            - main
-            - develop
-    pull_request:
-        branches:
-            - main
-            - develop
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+  push:
+    branches:
+      - main 
+      - develop 
 jobs:
-  contrib-readme-job:
+  update-contributors:
     runs-on: ubuntu-latest
-    name: A job to automate contrib in readme.
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      - name: Contribute List
-        uses: Raaphe/GasFein@develop
-        with:
-            readme_path: "README.md"
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
+      - name: Update Contributors in README
+        uses: akhilmhdh/contributors-readme-action@v2.0
+        with:
+          action: update
+          readme-path: README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
