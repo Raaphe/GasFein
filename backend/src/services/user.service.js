@@ -1,129 +1,183 @@
-const { dataSource } = require('../configs/db.config');
-const { hashPassword } = require('../utils/security.util');
+const { getDataSource } = require('../configs/orm.config');
 const { User } = require('../models/user.model');
+const { Station } = require('../models/station.model');
+const { Car, FuelType } = require('../models/car.model');
+const { hashPassword } = require('../utils/security.util');
 
-const userRepository = dataSource.getRepository(User);
-
-/**
- * Create a new user and save it to the database.
- * @param {string} first_name - The user's first name.
- * @param {string} last_name - The user's last name.
- * @param {string} email - The user's email address.
- * @param {string} password - The user's password.
- * @param {string} profile_image - The URL/path to the user's profile image.
- * @returns {Promise<User>} The created user.
- */
-async function createUser(first_name, last_name, email, password, profile_image) {
-    const newUser = new User();
-    newUser.first_name = first_name;
-    newUser.last_name = last_name;
-    newUser.email = email;
-    newUser.password = hashPassword(password);
-    newUser.profile_image = profile_image;
-
-    try {
-        const savedUser = await userRepository.save(newUser);
-        console.log('User created successfully:', savedUser);
-        return savedUser;
-    } catch (error) {
-        console.error('Error creating user:', error);
-        throw new Error('Error creating user');
+class UserService {
+    constructor() {
+        const dataSource = getDataSource();
+        this.userRepository = dataSource.getRepository(User);
+        this.stationRepository = dataSource.getRepository(Station);
+        this.carRepository = dataSource.getRepository(Car);
     }
-}
 
-/**
- * Get a user by their ID.
- * @param {number} userId - The ID of the user.
- * @returns {Promise<User>} The user with the specified ID.
- */
-async function getUserById(userId) {
-    try {
-        const user = await userRepository.findOneBy({ id: userId });
-        if (!user) {
-            throw new Error('User not found');
-        }
+    /**
+     * Fetches a user by ID. Throws an error if the user is not found.
+     * @param {number} userId - The user's ID.
+     * @returns {Promise<User>} - The user object.
+     */
+    async fetchUser(userId) {
+        const user = await this.userRepository.findOne({
+            where: { id: userId },
+            relations: ['cars', 'stations'],
+        });
+        if (!user) throw new Error('User not found');
         return user;
-    } catch (error) {
-        console.error('Error fetching user by ID:', error);
-        throw error;
     }
-}
 
-/**
- * Get a user by their email address.
- * @param {string} email - The user's email address.
- * @returns {Promise<User>} The user with the specified email.
- */
-async function getUserByEmail(email) {
-    try {
-        const user = await userRepository.findOneBy({ email: email });
-        if (!user) {
-            throw new Error('User not found');
+    /**
+     * Creates a new user and returns the created user.
+     * @param {object} userDetails - The user data.
+     * @returns {Promise<User>} - The created user object.
+     */
+    async createUser(firstName, lastName, email, password, profileImage) {
+        try {
+            const newUser = this.userRepository.create({
+                first_name: firstName,
+                last_name: lastName,
+                email,
+                password,
+                profile_image: profileImage,
+            });
+
+            newUser.password_hash = await hashPassword(password);
+            return await this.userRepository.save(newUser);
+        } catch (error) {
+            console.error('Error creating user:', error.message);
+            throw new Error('Unable to create user');
         }
-        return user;
-    } catch (error) {
-        console.error('Error fetching user by email:', error);
-        throw error;
     }
+
+    /**
+     * Updates a user's details and returns the updated user.
+     * @param {number} userId - The user's ID.
+     * @param {object} updates - Fields to update.
+     * @returns {Promise<User>} - The updated user object.
+     */
+    async updateUser(userId, updates) {
+        try {
+            const user = await this.fetchUser(userId);
+            if (updates.firstName) user.first_name = updates.firstName;
+            if (updates.lastName) user.last_name = updates.lastName;
+            if (updates.email) user.email = updates.email;
+            if (updates.password) user.password_hash = await hashPassword(updates.password);
+            if (updates.profileImage) user.profile_image = updates.profileImage;
+
+            return await this.userRepository.save(user);
+        } catch (error) {
+            console.error('Error updating user:', error);
+            throw new Error('Failed to update user');
+        }
+    }
+
+    /**
+     * Deletes a user by ID.
+     * @param {number} userId - The user's ID.
+     * @returns {Promise<boolean>} - True if the user was deleted, otherwise false.
+     */
+    async deleteUser(userId) {
+        const user = await this.fetchUser(userId);
+        return await this.userRepository.remove(user) !== null;
+    }
+
+    /**
+     * Adds a station to a user's list.
+     * @param {number} userId - The user's ID.
+     * @param {object} stationDetails - The station data.
+     * @returns {Promise<Station>} - The added station.
+     */
+    async addStationToUser(userId, stationName, address) {
+        const user = await this.fetchUser(userId);
+        const newStation = this.stationRepository.create({
+            station_name: stationName,
+            address,
+            user,
+        });
+        return await this.stationRepository.save(newStation);
+    }
+
+    /**
+     * Removes a station from a user's list.
+     * @param {number} userId - The user's ID.
+     * @param {number} stationId - The station's ID to be removed.
+     * @returns {Promise<boolean>} - True if the station was removed, otherwise false.
+     */
+    async deleteStationFromUser(userId, stationId) {
+        try {
+            const user = await this.fetchUser(userId);
+            const updatedStations = user.stations.filter(station => station.id !== stationId);
+            if (updatedStations.length === user.stations.length) throw new Error('Station not found');
+            user.stations = updatedStations;
+            await this.userRepository.save(user);
+            return true;
+        } catch (error) {
+            console.error('Error deleting station:', error.message);
+            throw new Error('Failed to delete station');
+        }
+    }
+
+    /**
+     * Adds a car to a user's list.
+     * @param {number} userId - The user's ID.
+     * @param {object} carDetails - The car data.
+     * @returns {Promise<Car>} - The added car.
+     */
+    async addCarToUser(userId, make, model, year, color, fuelType = FuelType.GASOLINE) {
+        const user = await this.fetchUser(userId);
+        const newCar = this.carRepository.create({
+            make,
+            model,
+            year,
+            color,
+            fuel_type: fuelType,
+            user,
+        });
+        return await this.carRepository.save(newCar);
+    }
+
+    /**
+     * Removes a car from a user's list.
+     * @param {number} userId - The user's ID.
+     * @param {string} carId - The car's ID to be removed.
+     * @returns {Promise<boolean>} - True if the car was removed, otherwise false.
+     */
+    async deleteCarFromUser(userId, carId) {
+        try {
+            const user = await this.fetchUser(userId);
+            const updatedCars = user.cars.filter(car => car.id !== carId);
+            if (updatedCars.length === user.cars.length) throw new Error('Car not found');
+            user.cars = updatedCars;
+            await this.userRepository.save(user);
+            return true;
+        } catch (error) {
+            console.error('Error deleting car:', error.message);
+            throw new Error('Failed to remove car');
+        }
+    }
+
+    /**
+     * Gets all cars associated with a user.
+     * @param {number} userId - The user's ID.
+     * @returns {Promise<Car[]>} - A list of cars associated with the user.
+     */
+    async getCarsByUser(userId) {
+        const user = await this.fetchUser(userId);
+        return user.cars;
+    }
+
+    /**
+     * Gets all stations associated with a user.
+     * @param {number} userId - The user's ID.
+     * @returns {Promise<Station[]>} - A list of stations associated with the user.
+     */
+    async getStationsByUser(userId) {
+        const user = await this.fetchUser(userId);
+        return user.stations;
+    }
+
 }
 
-/**
- * Update an existing user's details.
- * @param {number} userId - The ID of the user to update.
- * @param {Object} updateData - An object containing the data to update (e.g., { first_name, last_name, profile_image }).
- * @returns {Promise<User>} The updated user.
- */
-async function updateUser(userId, updateData) {
-    try {
-        const user = await getUserById(userId);
-        
-        Object.assign(user, updateData);
-
-        const updatedUser = await userRepository.save(user);
-        console.log('User updated successfully:', updatedUser);
-        return updatedUser;
-    } catch (error) {
-        console.error('Error updating user:', error);
-        throw error;
-    }
-}
-
-/**
- * Delete a user by their ID.
- * @param {number} userId - The ID of the user to delete.
- * @returns {Promise<boolean>} Returns true if deletion was successful, false otherwise.
- */
-async function deleteUser(userId) {
-    try {
-        const user = await getUserById(userId);
-        await userRepository.remove(user);
-        console.log('User deleted successfully:', userId);
-        return true;
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        return false;
-    }
-}
-
-/**
- * Get all users from the database.
- * @returns {Promise<User[]>} A list of all users.
- */
-async function getAllUsers() {
-    try {
-        const users = await userRepository.find();
-        return users;
-    } catch (error) {
-        console.error('Error fetching all users:', error);
-        throw error;
-    }
-}
-
-module.exports = {
-    createUser,
-    getUserById,
-    getUserByEmail,
-    updateUser,
-    deleteUser,
-    getAllUsers
+module.exports = { 
+    UserService 
 };

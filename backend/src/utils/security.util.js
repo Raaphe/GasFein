@@ -62,4 +62,9 @@ const compareStationId = (stationName, address, id) => {
     }
 };
 
-module.exports = { hashPassword, comparePassword, generateUniqueStationId, compareStationId };
+module.exports = { 
+    hashPassword, 
+    comparePassword, 
+    generateUniqueStationId, 
+    compareStationId 
+};

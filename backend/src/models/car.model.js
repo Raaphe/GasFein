@@ -1,5 +1,4 @@
 const { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } = require('typeorm');
-const { User } = require('./user.model');
 
 const FuelType = {
   GASOLINE: 'gasoline',
