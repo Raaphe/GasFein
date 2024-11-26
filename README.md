@@ -21,6 +21,13 @@ Thanks to these amazing contributors:
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/hasilon88">
+            <img src="https://avatars.githubusercontent.com/u/109122423?v=4" width="100;" alt="hasilon88"/>
+            <br />
+            <sub><b>Harjot Singh</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/Schn777">
             <img src="https://avatars.githubusercontent.com/u/113941848?v=4" width="100;" alt="Schn777"/>
             <br />
