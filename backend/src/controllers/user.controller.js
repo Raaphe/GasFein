@@ -3,7 +3,7 @@ const { UserService } = require('../services/user.service');
 
 let userService;
 
-const initializeServices = async () => {
+const init = async () => {
     try {
         await connectToDataSource();
         userService = new UserService();
@@ -59,10 +59,9 @@ const deleteUser = async (req, res) => {
 
 const addStationToUser = async (req, res) => {
     const { userId } = req.params;
-    const { stationName, address } = req.body;
-    console.log(req.body);
+    const { stationName, address, price } = req.body;
     try {
-        const station = await userService.addStationToUser(Number(userId), stationName, address);
+        const station = await userService.addStationToUser(Number(userId), stationName, address, price);
         res.status(201).json(station);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -131,7 +130,7 @@ const getStationsByUser = async (req, res) => {
     }
 };
 
-initializeServices();
+init();
 
 module.exports = {
     getUser,

@@ -15,12 +15,6 @@ const {
 const router = express.Router();
 
 /**
- * ===========================
- * USER ROUTES
- * ===========================
- */
-
-/**
  * @swagger
  * tags:
  *   - name: Users
@@ -143,12 +137,6 @@ router.put('/users/:userId', updateUser);
 router.delete('/users/:userId', deleteUser);
 
 /**
- * ===========================
- * STATION ROUTES
- * ===========================
- */
-
-/**
  * @swagger
  * tags:
  *   - name: Stations
@@ -180,6 +168,8 @@ router.delete('/users/:userId', deleteUser);
  *                 type: string
  *               address:
  *                 type: string
+ *               price:
+ *                 type: number
  *     responses:
  *       201:
  *         description: Station added successfully
@@ -239,12 +229,6 @@ router.delete('/users/:userId/stations/:stationId', deleteStationFromUser);
  *         description: Internal server error
  */
 router.get('/users/:userId/stations', getStationsByUser);
-
-/**
- * ===========================
- * CAR ROUTES
- * ===========================
- */
 
 /**
  * @swagger

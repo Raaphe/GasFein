@@ -6,7 +6,8 @@
   "scripts": {
     "build": "babel src --out-dir build && echo 'Build completed!'",
     "start": "npm run build && node build/index.js",
-    "clean": "rimraf build && echo 'Cleaned dist folder!'"
+    "clean": "rimraf build && echo 'Cleaned dist folder!'",
+    "jsdoc": "jsdoc -c jsdoc.json -r -R ../README.md ./src/ -d docs/jsdoc && jsdoc2md --files src/index.js > docs/API.md"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -27,7 +28,9 @@
     "@babel/plugin-proposal-decorators": "^7.25.9",
     "@babel/preset-env": "^7.26.0",
     "@types/node": "^22.9.4",
-    "rimraf": "^3.0.2",
-    "nodemon": "^2.0.22"
+    "jsdoc": "^4.0.4",
+    "jsdoc-to-markdown": "^9.0.5",
+    "nodemon": "^2.0.22",
+    "rimraf": "^3.0.2"
   }
 }

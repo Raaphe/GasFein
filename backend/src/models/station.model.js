@@ -12,6 +12,9 @@ class Station {
     @Column({ type: 'varchar', length: 255 })
     address;
 
+    @Column({ type: 'double' })
+    price;
+
     @ManyToOne(() => require('./user.model').User, user => user.stations)
     @JoinColumn({ name: 'user_id' })
     user;
