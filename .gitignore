@@ -1,0 +1,62 @@
+# Logs
+/backend/logs
+/backend/*.log
+/backend/npm-debug.log*
+/backend/yarn-debug.log*
+/backend/yarn-error.log*
+
+# Runtime data
+/backend/pids
+/backend/*.pid
+/backend/*.seed
+/backend/*.pid.lock
+
+# Dependency directories
+/backend/node_modules/
+
+# Optional npm cache directory
+/backend/.npm
+
+# Optional REPL history
+/backend/.node_repl_history
+
+# Environment variables
+#/backend/.env
+
+# Build output
+/backend/dist/
+/backend/build/
+
+# Static file dumps (if used)
+/backend/public/static/
+
+# Test coverage
+/backend/coverage/
+
+# Debug files
+/backend/*.log
+/backend/*.out
+/backend/*.err
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.swd
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Others
+*.bak
+*.tmp
+
+# Yarn Integrity
+/backend/.yarn-integrity
+
+# Package lock (optional if you're not using lock files)
+/backend/package-lock.json
+/backend/yarn.lock
