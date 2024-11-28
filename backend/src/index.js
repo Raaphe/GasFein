@@ -4,7 +4,9 @@ const express = require('express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { swaggerOptions } = require('./configs/swagger.config.js');
-const userRoutes = require('./routes/user.route.js'); 
+const userRoutes = require('./routes/user.route.js');
+const gasRoutes = require('./routes/gas.route.js');
+const authRoutes = require('./routes/auth.route.js');
 require('reflect-metadata');
 
 const app = express();
@@ -20,7 +22,10 @@ connectToDataSource()
   .then(() => {
     console.log("\n\nData Source has been initialized!");
     app.use('/api', userRoutes);
-    
+    app.use('/api', gasRoutes);
+    app.use('/api', authRoutes);
+
+
     app.listen(config.PORT, () => {
       console.log(`Server is running on http://localhost:${config.PORT}`);
     });

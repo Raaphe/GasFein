@@ -36,6 +36,21 @@ class UserService {
     }
 
     /**
+     * Récupère un utilisateur par son email.
+     * Lance une erreur si l'utilisateur n'est pas trouvé.
+     * @param {string} email - L'identifiant de l'utilisateur.
+     * @returns {Promise<User>} - L'utilisateur trouvé.
+    */
+    fetchUserByEmail = async (email) => {
+        const user = await this.userRepository.findOne({
+            where: { email: email },
+            relations: ['cars', 'stations'],
+        });
+        if (!user) throw new Error('Utilisateur non trouvé');
+        return user;
+    }
+
+    /**
      * Crée un nouvel utilisateur et retourne l'utilisateur créé.
      * @param {string} firstName - Le prénom de l'utilisateur.
      * @param {string} lastName - Le nom de famille de l'utilisateur.

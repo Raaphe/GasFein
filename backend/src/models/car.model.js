@@ -9,30 +9,30 @@ const FuelType = {
 
 @Entity()
 class Car {
-    @PrimaryGeneratedColumn()
-    id;
+  @PrimaryGeneratedColumn()
+  id;
 
-    @Column({ type: 'varchar', length: 100 })
-    make;
+  @Column({ type: 'varchar', length: 100 })
+  make;
 
-    @Column({ type: 'varchar', length: 100 })
-    model;
+  @Column({ type: 'varchar', length: 100 })
+  model;
 
-    @Column({ type: 'int' })
-    year;
+  @Column({ type: 'int' })
+  year;
 
-    @Column({ type: 'varchar', length: 50 })
-    color;
+  @Column({ type: 'varchar', length: 50 })
+  color;
 
-    @Column({ type: 'varchar', length: 50, enum: Object.values(FuelType), default: FuelType.GASOLINE })
-    fuel_type;
+  @Column({ type: 'varchar', length: 50, enum: Object.values(FuelType), default: FuelType.GASOLINE })
+  fuel_type;
 
-    @Column({ type: 'number', default: 0 })
-    tank_volume;
+  @Column({ type: 'double', default: 0 })
+  tank_volume;
 
-    @ManyToOne(() => require('./user.model').User, user => user.cars)
-    @JoinColumn({ name: 'user_id' })
-    user;
+  @ManyToOne(() => require('./user.model').User, user => user.cars)
+  @JoinColumn({ name: 'user_id' })
+  user;
 }
 
 module.exports = { Car, FuelType };

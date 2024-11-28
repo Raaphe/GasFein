@@ -21,6 +21,12 @@ const config = {
   PORT: process.env.PORT || 3000,
 
   /**
+   * Le secret utilisé pour la génération des JWT.
+   * @type {string}
+  */
+  JWT_SECRET: process.env.JWT_SECRET || "SECRET",
+
+  /**
    * Environnement d'exécution de l'application.
    * Peut être 'development', 'production' ou 'test'.
    * Défini par la variable d'environnement `NODE_ENV`, sinon 'development' par défaut.
