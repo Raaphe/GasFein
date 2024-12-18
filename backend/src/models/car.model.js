@@ -27,7 +27,7 @@ class Car {
     @Column({ type: 'varchar', length: 50, enum: Object.values(FuelType), default: FuelType.GASOLINE })
     fuel_type;
 
-    @Column({ type: 'number', default: 0 })
+    @Column({ type: 'float', default: 0 })
     tank_volume;
 
     @ManyToOne(() => require('./user.model').User, user => user.cars)
