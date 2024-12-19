@@ -15,7 +15,7 @@ Thanks to these amazing contributors:
 <tr>
     <td align="center">
         <a href="https://github.com/Raaphe">
-            <img src="https://private-avatars.githubusercontent.com/u/120033739?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MzQ2MDM3MjAsIm5iZiI6MTczNDYwMjUyMCwicGF0aCI6Ii91LzEyMDAzMzczOSJ9.CXDlg0_543FvNfeWg8ePxEGCR0n3igb9MmVR1DOsjbk&v=4" width="100;" alt="Raaphe"/>
+            <img src="https://private-avatars.githubusercontent.com/u/120033739?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MzQ2MDQ2MjAsIm5iZiI6MTczNDYwMzQyMCwicGF0aCI6Ii91LzEyMDAzMzczOSJ9.DFOsyERf_MMKoA0V7vGFUCAHNS1mJyvCCcOsnOe8Ybc&v=4" width="100;" alt="Raaphe"/>
             <br />
             <sub><b>Raph</b></sub>
         </a>
@@ -29,7 +29,7 @@ Thanks to these amazing contributors:
     </td>
     <td align="center">
         <a href="https://github.com/Schn777">
-            <img src="https://private-avatars.githubusercontent.com/u/113941848?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MzQ2MDM3ODAsIm5iZiI6MTczNDYwMjU4MCwicGF0aCI6Ii91LzExMzk0MTg0OCJ9.6q5O3TN4IVao0yrD9luSyCkCFLh0yqwbNUtbM8_jCAY&v=4" width="100;" alt="Schn777"/>
+            <img src="https://private-avatars.githubusercontent.com/u/113941848?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MzQ2MDQ2ODAsIm5iZiI6MTczNDYwMzQ4MCwicGF0aCI6Ii91LzExMzk0MTg0OCJ9.oib9M1kstS8Q2qvznKuJc4-iJ2bTF5P7CMYwNlMfLYM&v=4" width="100;" alt="Schn777"/>
             <br />
             <sub><b>Schn777</b></sub>
         </a>
