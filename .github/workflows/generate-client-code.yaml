@@ -15,6 +15,8 @@ jobs:
 
       - name: Clean up existing generated-client directory
         run: |
+          ls -la
+          pwd
           rm -rf ./GasFein/frontend/api/generated-client || true
 
       - name: Generate Javascript Client Code
