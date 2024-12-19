@@ -15,7 +15,7 @@
     "scripts": [],
     "menu":{
       "Github repo": {
-        "href":"https://github.com/your-github-username/pet-adoption-center-sdk",
+        "href":"https://github.com/Raaphe/GasFein",
         "target":"_blank",
         "class":"menu-item",
         "id":"repository"

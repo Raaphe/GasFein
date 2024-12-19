@@ -22,6 +22,41 @@ const getUser = async (req, res) => {
     }
 };
 
+const getUserByEmailAndPassword = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await userService.fetchUserByEmailAndPassword(email, password);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+        }
+
+        return res.status(200).json(user);
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l’utilisateur:', error);
+        return res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
+const getUserByJwt = async (req, res) => {
+    const { jwt } = req.body;
+
+    try {
+
+        const user = await userService.fetchUserByJwt(jwt);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Token invalide ou manquant' });
+        }
+
+        return res.status(200).json(user);
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l’utilisateur avec JWT:', error);
+        return res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
 const createUser = async (req, res) => {
     const { firstName, lastName, email, password, profileImage } = req.body;
     try {
@@ -134,6 +169,8 @@ init();
 
 module.exports = {
     getUser,
+    getUserByEmailAndPassword,
+    getUserByJwt,
     createUser,
     updateUser,
     deleteUser,

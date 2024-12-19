@@ -4,8 +4,11 @@ const express = require('express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { swaggerOptions } = require('./configs/swagger.config.js');
-const userRoutes = require('./routes/user.route.js'); 
+const {generateSwaggerFile} = require("./utils/file.util");
 require('reflect-metadata');
+
+const userRoutes = require('./routes/user.route.js');
+const gasApiRoutes = require('./routes/gas-api.route.js');
 
 const app = express();
 app.use(express.json());
@@ -13,13 +16,16 @@ app.use(express.json());
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use(`${config.BASE_PATH}/docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.get(`${config.BASE_PATH}/docs.json`, (req, res) => res.json(swaggerDocs));
+generateSwaggerFile('../docs/swagger/swagger.json', swaggerOptions);
 
 app.get('/', (req, res) => res.redirect(`${config.BASE_PATH}/docs`));
 
 connectToDataSource()
   .then(() => {
     console.log("\n\nData Source has been initialized!");
+
     app.use('/api', userRoutes);
+    app.use('/api', gasApiRoutes);
     
     app.listen(config.PORT, () => {
       console.log(`Server is running on http://localhost:${config.PORT}`);
