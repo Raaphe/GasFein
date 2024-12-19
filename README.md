@@ -22,7 +22,7 @@ Thanks to these amazing contributors:
     </td>
     <td align="center">
         <a href="https://github.com/hasilon88">
-            <img src="https://private-avatars.githubusercontent.com/u/109122423?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MzQ2MDQxNDAsIm5iZiI6MTczNDYwMjk0MCwicGF0aCI6Ii91LzEwOTEyMjQyMyJ9.PR_2PWxh5Dx2VCvR17ORHHlUpBdV_-K1rOZzezI2f1A&v=4" width="100;" alt="hasilon88"/>
+            <img src="https://private-avatars.githubusercontent.com/u/109122423?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE3MzQ2MDUwNDAsIm5iZiI6MTczNDYwMzg0MCwicGF0aCI6Ii91LzEwOTEyMjQyMyJ9.aUh4TcEAtngdAeBCThzGgTN7-3reNhu8oDCZejRMXA4&v=4" width="100;" alt="hasilon88"/>
             <br />
             <sub><b>Harjot Singh</b></sub>
         </a>
