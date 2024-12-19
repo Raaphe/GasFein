@@ -1,0 +1,46 @@
+name: Generate Client Code & Generate Docs
+
+on:
+  push:
+    branches:
+      - "develop"
+
+jobs:
+  generate-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v3
+
+      - name: Clean up existing generated-client directory
+        run: |
+          rm -rf ./frontend/api/generated-client || true
+
+      - name: Generate Javascript Client Code
+        run: |
+          docker run --rm \
+            -v ${PWD}:/local openapitools/openapi-generator-cli generate \
+            -i /local/docs/swagger/swagger.json \
+            -g javascript \
+            -o /local/frontend/api/generated-client \
+            --skip-validate-spec
+
+      - name: Generate backend docs
+        run: |
+          cd backend
+          npm i
+          npm run jsdoc
+          cd ..
+
+      - name: Pull the latest changes before pushing
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git pull origin develop --rebase || echo "No new changes to pull"
+
+      - name: Commit and push changes if any
+        run: |
+          git add .
+          git commit -m "Update generated client code" || echo "No changes to commit"
+          git push origin develop || echo "Nothing to push"

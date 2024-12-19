@@ -69,6 +69,13 @@ const config = {
    * @type {string}
    */
   DB_NAME: process.env.DB_NAME || 'testdb',
+
+  /**
+   * Clé privée utilisée pour signer les JSON Web Tokens (JWT).
+   * Définie par la variable d'environnement `JWT_PRIVATE_KEY`, sinon 'abc-123' par défaut.
+   * @type {string}
+   */
+  JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY || 'abc-123',
 };
 
 module.exports = { config };

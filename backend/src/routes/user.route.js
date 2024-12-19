@@ -1,15 +1,17 @@
 const express = require('express');
-const { 
-    getUser, 
-    createUser, 
-    updateUser, 
-    deleteUser, 
-    addStationToUser, 
+const {
+    getUser,
+    getUserByEmailAndPassword,
+    getUserByJwt,
+    createUser,
+    updateUser,
+    deleteUser,
+    addStationToUser,
     deleteStationFromUser,
     addCarToUser,
     deleteCarFromUser,
-    getCarsByUser, 
-    getStationsByUser 
+    getCarsByUser,
+    getStationsByUser
 } = require('../controllers/user.controller');
 
 const router = express.Router();
@@ -42,6 +44,56 @@ const router = express.Router();
  *         description: User not found
  */
 router.get('/users/:userId', getUser);
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Authenticate user by email and password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User authenticated successfully
+ *       401:
+ *         description: Invalid credentials
+ */
+router.post('/users/login', getUserByEmailAndPassword);
+
+/**
+ * @swagger
+ * /users/login/jwt:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Authenticate user using JWT token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               jwt:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User authenticated successfully
+ *       401:
+ *         description: Invalid JWT token
+ */
+router.post('/users/login/jwt', getUserByJwt);
 
 /**
  * @swagger

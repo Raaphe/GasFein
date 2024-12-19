@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>utils/security.util.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/Raaphe/GasFein" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="GasApiService.html">GasApiService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="GasApiService.html#.fetchGasPrices">fetchGasPrices</a></li></ul></li><li><a href="UserService.html">UserService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Config%2520Generaux.html">Config Generaux</a></li><li><a href="ORM.html">ORM</a><ul class='members'><li data-type='member' style='display: none;'><a href="ORM.html#.dataSourceInstance">dataSourceInstance</a></li><li data-type='member' style='display: none;'><a href="ORM.html#.isDev">isDev</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="ORM.html#.connectToDataSource">connectToDataSource</a></li><li data-type='method' style='display: none;'><a href="ORM.html#.createDataSource">createDataSource</a></li><li data-type='method' style='display: none;'><a href="ORM.html#.getDataSource">getDataSource</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#comparePassword">comparePassword</a></li><li><a href="global.html#compareStationId">compareStationId</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#decodeJwt">decodeJwt</a></li><li><a href="global.html#generateUniqueStationId">generateUniqueStationId</a></li><li><a href="global.html#getGasPrices">getGasPrices</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isJwtValid">isJwtValid</a></li><li><a href="global.html#signJwt">signJwt</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">utils/security.util.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { config } = require('../configs/general.config');
+const bcrypt = require('bcryptjs');
+const { v5: uuidv5 } = require('uuid');
+const jwt = require('jsonwebtoken');
+
+/**
+ * Hache un mot de passe en texte clair à l'aide de bcrypt.
+ * @param {string} plainTextPassword - Le mot de passe à hacher.
+ * @returns {Promise&lt;string>} - Le mot de passe haché.
+ */
+const hashPassword = async (plainTextPassword) => {
+    try {
+        const salt = await bcrypt.genSalt(10);
+        return await bcrypt.hash(plainTextPassword, salt);
+    } catch (error) {
+        console.error('Erreur lors du hachage du mot de passe :', error);
+        throw error;
+    }
+};
+
+/**
+ * Compare un mot de passe en texte clair avec un mot de passe haché à l'aide de bcrypt.
+ * @param {string} plainTextPassword - Le mot de passe en texte clair.
+ * @param {string} passwordHash - Le mot de passe haché à comparer.
+ * @returns {Promise&lt;boolean>} - Retourne true si les mots de passe correspondent, sinon false.
+ */
+const comparePassword = async (plainTextPassword, passwordHash) => {
+    try {
+        return await bcrypt.compare(plainTextPassword, passwordHash);
+    } catch (error) {
+        console.error('Erreur lors de la comparaison des mots de passe :', error);
+        throw error;
+    }
+};
+
+/**
+ * Génère un identifiant unique pour une station à partir de son nom et de son adresse.
+ * @param {string} stationName - Le nom de la station.
+ * @param {string} address - L'adresse de la station.
+ * @returns {string} - L'identifiant unique de la station.
+ */
+const generateUniqueStationId = (stationName, address) => {
+    try {
+        return uuidv5(`${stationName}-${address}`, uuidv5.DNS);
+    } catch (error) {
+        console.error('Erreur lors de la génération de l\'ID de la station :', error);
+        throw error;
+    }
+};
+
+/**
+ * Compare un identifiant de station généré avec un identifiant fourni pour vérifier s'ils correspondent.
+ * @param {string} stationName - Le nom de la station.
+ * @param {string} address - L'adresse de la station.
+ * @param {string} id - L'identifiant de la station à comparer.
+ * @returns {boolean} - Retourne true si les identifiants correspondent, sinon false.
+ */
+const compareStationId = (stationName, address, id) => {
+    try {
+        return generateUniqueStationId(stationName, address) === id;
+    } catch (error) {
+        console.error('Erreur lors de la comparaison de l\'ID de la station :', error);
+        return false;
+    }
+};
+
+/**
+ * Génère un JWT signé à partir des données fournies.
+ * @param {Object} data - Les données à inclure dans le payload du token.
+ * @returns {string} - Le JWT signé.
+ */
+const signJwt = (data) => {
+    try {
+        return jwt.sign({ data }, config.JWT_PRIVATE_KEY, { expiresIn: '1h' });
+    } catch (error) {
+        console.error('Erreur lors de la signature du JWT :', error);
+        throw error;
+    }
+};
+
+/**
+ * Décodage et vérification d'un JWT à l'aide de la clé privée.
+ * @param {string} token - Le JWT à décoder et vérifier.
+ * @returns {Object} - Le payload décodé.
+ */
+const decodeJwt = (token) => {
+    try {
+        return jwt.verify(token, config.JWT_PRIVATE_KEY);
+    } catch (error) {
+        console.error('Erreur lors du décodage du JWT :', error);
+        throw error;
+    }
+};
+
+/**
+ * Vérifie si un JWT est valide et non expiré.
+ * @param {string} token - Le JWT à valider.
+ * @returns {boolean} - Retourne true si le JWT est valide, sinon false.
+ */
+const isJwtValid = (token) => {
+    try {
+        jwt.verify(token, config.JWT_PRIVATE_KEY);
+        return true;
+    } catch (error) {
+        console.error('Erreur lors de la validation du JWT :', error);
+        return false;
+    }
+};
+
+module.exports = {
+    hashPassword,
+    comparePassword,
+    generateUniqueStationId,
+    compareStationId,
+    signJwt,
+    decodeJwt,
+    isJwtValid
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Thu Dec 19 2024 10:31:51 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

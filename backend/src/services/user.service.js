@@ -2,7 +2,7 @@ const { getDataSource } = require('../configs/orm.config');
 const { User } = require('../models/user.model');
 const { Station } = require('../models/station.model');
 const { Car, FuelType } = require('../models/car.model');
-const { hashPassword } = require('../utils/security.util');
+const { hashPassword, comparePassword, signJwt, decodeJwt, isJwtValid } = require('../utils/security.util');
 
 /**
  * Service pour la gestion des utilisateurs.
@@ -31,9 +31,47 @@ class UserService {
             where: { id: userId },
             relations: ['cars', 'stations'],
         });
-        if (!user) throw new Error('Utilisateur non trouvé');
+
+        if (!user) {
+            throw new Error('Utilisateur non trouvé');
+        }
+
+        user.password_hash = "";
+
         return user;
     }
+
+    /**
+     * Récupère un utilisateur en utilisant son adresse e-mail et son mot de passe.
+     * @param {string} email - L'adresse e-mail de l'utilisateur.
+     * @param {string} password - Le mot de passe de l'utilisateur à vérifier.
+     * @returns {Promise<User|null>} - L'utilisateur trouvé avec ses voitures et stations, ou null si l'utilisateur n'existe pas ou si le mot de passe est incorrect.
+     */
+    fetchUserByEmailAndPassword = async (email, password) => {
+        const user = await this.userRepository.findOne({
+            where: { email },
+            relations: ['cars', 'stations'],
+        });
+
+        if (!user || !(await comparePassword(password, user.password_hash))) {
+            return null;
+        }
+
+        return { ...user, jwt: signJwt(user.id) };
+    };
+
+    /**
+     * Récupère un utilisateur en utilisant un JSON Web Token (JWT).
+     * @param {string} jwt - Le JWT de l'utilisateur à valider.
+     * @returns {Promise<User|null>} - L'utilisateur trouvé ou null si le JWT est invalide ou manquant.
+     */
+    fetchUserByJwt = async (jwt) => {
+        if (!jwt || !isJwtValid(jwt)) {
+            return null;
+        }
+
+        return this.fetchUser(decodeJwt(jwt).data);
+    };
 
     /**
      * Crée un nouvel utilisateur et retourne l'utilisateur créé.
@@ -55,7 +93,11 @@ class UserService {
             });
 
             newUser.password_hash = await hashPassword(password);
-            return await this.userRepository.save(newUser);
+
+            const savedUser = await this.userRepository.save(newUser);
+            savedUser.password_hash = "";
+
+            return {...savedUser, jwt: signJwt(savedUser.id)};
         } catch (error) {
             console.error('Erreur lors de la création de l’utilisateur:', error.message);
             throw new Error('Impossible de créer l’utilisateur');
@@ -123,7 +165,11 @@ class UserService {
         try {
             const user = await this.fetchUser(userId);
             const updatedStations = user.stations.filter(station => station.id !== stationId);
-            if (updatedStations.length === user.stations.length) throw new Error('Station introuvable');
+
+            if (updatedStations.length === user.stations.length) {
+                throw new Error('Station introuvable');
+            }
+
             user.stations = updatedStations;
             await this.userRepository.save(user);
             return true;
@@ -166,7 +212,11 @@ class UserService {
         try {
             const user = await this.fetchUser(userId);
             const updatedCars = user.cars.filter(car => car.id !== carId);
-            if (updatedCars.length === user.cars.length) throw new Error('Voiture introuvable');
+
+            if (updatedCars.length === user.cars.length) {
+                throw new Error('Voiture introuvable');
+            }
+
             user.cars = updatedCars;
             await this.userRepository.save(user);
             return true;
@@ -199,5 +249,5 @@ class UserService {
 }
 
 module.exports = {
-    UserService,
+    UserService
 };
