@@ -1,4 +1,4 @@
-name: Generate Client Code
+name: Generate Client Code & Generate Docs
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "develop"
 
 jobs:
-  generate-client-code:
+  generate-data:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +25,13 @@ jobs:
             -g javascript \
             -o /local/frontend/api/generated-client \
             --skip-validate-spec
+
+      - name: Generate backend docs
+        run: |
+          cd backend
+          npm i
+          npm run jsdoc
+          cd ..
 
       - name: Commit and push changes if any
         run: |
