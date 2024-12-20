@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new GasFeinApi.ServiceRouteApi();
+    instance = new GasFeinApi.DefaultApi();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,11 +47,11 @@
       object[property] = value;
   }
 
-  describe('ServiceRouteApi', function() {
-    describe('directionsGet', function() {
-      it('should call directionsGet successfully', function(done) {
-        //uncomment below and update the code to test directionsGet
-        //instance.directionsGet(function(error) {
+  describe('DefaultApi', function() {
+    describe('directionsCoordinatesGet', function() {
+      it('should call directionsCoordinatesGet successfully', function(done) {
+        //uncomment below and update the code to test directionsCoordinatesGet
+        //instance.directionsCoordinatesGet(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});
