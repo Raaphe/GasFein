@@ -5,37 +5,19 @@ const router = express.Router();
 
 /**
  * @swagger
- * tags:
- *   - name: Service Route
- *     description: Get directions service
- */
-
-/**
- * @swagger
- * /directions/:
+ * /directions/coordinates:
  *   get:
- *     summary: Get directions
- *     tags:
- *       - Service Route
+ *     summary: Get directions with multiple coordinates
+ *     parameters:
+ *       - in: query
+ *         name: points
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: JSON array of coordinates [{address:""},{long:"",lat:""}]
  *     responses:
  *       200:
  *         description: Successfully fetched directions
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 directions:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       station:
- *                         type: string
- *                         description: The station providing the directions
- *                       distance:
- *                         type: string
- *                         description: The distance to the destination
  *       500:
  *         description: Server error while fetching directions
  *         content:
@@ -45,9 +27,9 @@ const router = express.Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Une erreur est survenue lors de la récupération des directions.
+ *                   example: Error while trying to fetch the directions
  */
 
-router.get('/directions/', directions);
+router.get('/directions/coordinates', directions);
 
 module.exports = router;

@@ -1,18 +1,18 @@
-# GasFeinApi.ServiceRouteApi
+# GasFeinApi.DefaultApi
 
 All URIs are relative to *http://localhost:3000/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**directionsGet**](ServiceRouteApi.md#directionsGet) | **GET** /directions/ | Get directions
+[**directionsCoordinatesGet**](DefaultApi.md#directionsCoordinatesGet) | **GET** /directions/coordinates | Get directions with multiple coordinates
 
 
 
-## directionsGet
+## directionsCoordinatesGet
 
-> DirectionsGet200Response directionsGet()
+> directionsCoordinatesGet(points)
 
-Get directions
+Get directions with multiple coordinates
 
 ### Example
 
@@ -23,23 +23,27 @@ let defaultClient = GasFeinApi.ApiClient.instance;
 let BearerAuth = defaultClient.authentications['BearerAuth'];
 BearerAuth.accessToken = "YOUR ACCESS TOKEN"
 
-let apiInstance = new GasFeinApi.ServiceRouteApi();
-apiInstance.directionsGet((error, data, response) => {
+let apiInstance = new GasFeinApi.DefaultApi();
+let points = "points_example"; // String | 
+apiInstance.directionsCoordinatesGet(points, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log('API called successfully.');
   }
 });
 ```
 
 ### Parameters
 
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **points** | **String**|  | 
 
 ### Return type
 
-[**DirectionsGet200Response**](DirectionsGet200Response.md)
+null (empty response body)
 
 ### Authorization
 

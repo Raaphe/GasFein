@@ -31,7 +31,7 @@
     <input type="text" id="nav-search" placeholder="Search" />
     
     
-    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/Raaphe/GasFein" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="GasApiService.html">GasApiService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="GasApiService.html#.fetchGasPrices">fetchGasPrices</a></li></ul></li><li><a href="UserService.html">UserService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Config%2520Generaux.html">Config Generaux</a></li><li><a href="ORM.html">ORM</a><ul class='members'><li data-type='member' style='display: none;'><a href="ORM.html#.dataSourceInstance">dataSourceInstance</a></li><li data-type='member' style='display: none;'><a href="ORM.html#.isDev">isDev</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="ORM.html#.connectToDataSource">connectToDataSource</a></li><li data-type='method' style='display: none;'><a href="ORM.html#.createDataSource">createDataSource</a></li><li data-type='method' style='display: none;'><a href="ORM.html#.getDataSource">getDataSource</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#comparePassword">comparePassword</a></li><li><a href="global.html#compareStationId">compareStationId</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#decodeJwt">decodeJwt</a></li><li><a href="global.html#directions">directions</a></li><li><a href="global.html#generateUniqueStationId">generateUniqueStationId</a></li><li><a href="global.html#getGasPrices">getGasPrices</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isJwtValid">isJwtValid</a></li><li><a href="global.html#signJwt">signJwt</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/Raaphe/GasFein" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="GasApiService.html">GasApiService</a><ul class='methods'><li data-type='method' style='display: none;'><a href="GasApiService.html#.fetchGasPrices">fetchGasPrices</a></li></ul></li><li><a href="MapService.html">MapService</a></li><li><a href="UserService.html">UserService</a></li></ul><h3>Namespaces</h3><ul><li><a href="Config%2520Generaux.html">Config Generaux</a></li><li><a href="ORM.html">ORM</a><ul class='members'><li data-type='member' style='display: none;'><a href="ORM.html#.dataSourceInstance">dataSourceInstance</a></li><li data-type='member' style='display: none;'><a href="ORM.html#.isDev">isDev</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="ORM.html#.connectToDataSource">connectToDataSource</a></li><li data-type='method' style='display: none;'><a href="ORM.html#.createDataSource">createDataSource</a></li><li data-type='method' style='display: none;'><a href="ORM.html#.getDataSource">getDataSource</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#comparePassword">comparePassword</a></li><li><a href="global.html#compareStationId">compareStationId</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#decodeJwt">decodeJwt</a></li><li><a href="global.html#directions">directions</a></li><li><a href="global.html#generateUniqueStationId">generateUniqueStationId</a></li><li><a href="global.html#getGasPrices">getGasPrices</a></li><li><a href="global.html#hashPassword">hashPassword</a></li><li><a href="global.html#isJwtValid">isJwtValid</a></li><li><a href="global.html#signJwt">signJwt</a></li></ul>
     
 </nav>
 
@@ -47,28 +47,37 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const axios = require('axios')
-const { open_route_service }  = require('../configs/general.config');
-
+            <pre class="prettyprint source linenums"><code>const {MapService} = require('../services/map.services')
 /**
  * Contrôleur pour obtenir les coordonnées d'une itinéraire.
  * @param {object} req - Objet de requête Express 
  * @param {object} res - Objet de réponse Express.
  */
-const directions = async (req, res)=> {
-    // const {coordinate} = req.data;
-    // if(!coordinate){throw new Error("Coordinate not found")}
+const directions = async (req, res) => {
     try {
-        let response = await axios.get(open_route_service(["8.681495","49.41461"],["8.687872","49.420318"]))
-        console.log(response.data);
+        const points = JSON.parse(req.query.points); 
+        console.log(points);
+
+        if (points.length &lt; 2) {
+            return res.status(400).json({ message: "At least two coordinates are required for the route" });
+        }
+
+        const start = points[0];
+        const end = points[points.length - 1]; 
+        
+        const response = await MapService.open_route_service(start,end);
+        
+        res.status(200).json(response);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Error while trying to fetch the directions" });
     }
-    catch(err) {
-        console.error(err)
-        return res.status(401).json({message:"Error while trying fetch the directions"})
-    }
-}
+};
+
+
 module.exports = {
-    directions
+    directions,
+
 };</code></pre>
         </article>
     </section>
@@ -83,7 +92,7 @@ module.exports = {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Fri Dec 20 2024 07:52:24 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Fri Dec 20 2024 10:16:46 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

@@ -1,23 +1,32 @@
-const axios = require('axios')
-const { open_route_service }  = require('../configs/general.config');
-
+const {MapService} = require('../services/map.services')
 /**
  * Contrôleur pour obtenir les coordonnées d'une itinéraire.
  * @param {object} req - Objet de requête Express 
  * @param {object} res - Objet de réponse Express.
  */
-const directions = async (req, res)=> {
-    // const {coordinate} = req.data;
-    // if(!coordinate){throw new Error("Coordinate not found")}
+const directions = async (req, res) => {
     try {
-        let response = await axios.get(open_route_service(["8.681495","49.41461"],["8.687872","49.420318"]))
-        console.log(response.data);
+        const points = JSON.parse(req.query.points); 
+        console.log(points);
+
+        if (points.length < 2) {
+            return res.status(400).json({ message: "At least two coordinates are required for the route" });
+        }
+
+        const start = points[0];
+        const end = points[points.length - 1]; 
+        
+        const response = await MapService.open_route_service(start,end);
+        
+        res.status(200).json(response);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Error while trying to fetch the directions" });
     }
-    catch(err) {
-        console.error(err)
-        return res.status(401).json({message:"Error while trying fetch the directions"})
-    }
-}
+};
+
+
 module.exports = {
-    directions
+    directions,
+
 };
