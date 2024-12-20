@@ -13,7 +13,10 @@
 
 
 import ApiClient from "../ApiClient";
-import DirectionsCoordinatesGet500Response from '../model/DirectionsCoordinatesGet500Response';
+import DirectionsCoordinatesPost200Response from '../model/DirectionsCoordinatesPost200Response';
+import DirectionsCoordinatesPost400Response from '../model/DirectionsCoordinatesPost400Response';
+import DirectionsCoordinatesPost500Response from '../model/DirectionsCoordinatesPost500Response';
+import DirectionsCoordinatesPostRequestInner from '../model/DirectionsCoordinatesPostRequestInner';
 
 /**
 * Default service.
@@ -35,29 +38,30 @@ export default class DefaultApi {
 
 
     /**
-     * Callback function to receive the result of the directionsCoordinatesGet operation.
-     * @callback module:api/DefaultApi~directionsCoordinatesGetCallback
+     * Callback function to receive the result of the directionsCoordinatesPost operation.
+     * @callback module:api/DefaultApi~directionsCoordinatesPostCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/DirectionsCoordinatesPost200Response} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
-     * Get directions with multiple coordinates
-     * @param {String} points 
-     * @param {module:api/DefaultApi~directionsCoordinatesGetCallback} callback The callback function, accepting three arguments: error, data, response
+     * Get directions with multiple points
+     * Accepts an array of objects containing either coordinates (longitude and latitude) or an address.
+     * @param {Array.<module:model/DirectionsCoordinatesPostRequestInner>} directionsCoordinatesPostRequestInner 
+     * @param {module:api/DefaultApi~directionsCoordinatesPostCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/DirectionsCoordinatesPost200Response}
      */
-    directionsCoordinatesGet(points, callback) {
-      let postBody = null;
-      // verify the required parameter 'points' is set
-      if (points === undefined || points === null) {
-        throw new Error("Missing the required parameter 'points' when calling directionsCoordinatesGet");
+    directionsCoordinatesPost(directionsCoordinatesPostRequestInner, callback) {
+      let postBody = directionsCoordinatesPostRequestInner;
+      // verify the required parameter 'directionsCoordinatesPostRequestInner' is set
+      if (directionsCoordinatesPostRequestInner === undefined || directionsCoordinatesPostRequestInner === null) {
+        throw new Error("Missing the required parameter 'directionsCoordinatesPostRequestInner' when calling directionsCoordinatesPost");
       }
 
       let pathParams = {
       };
       let queryParams = {
-        'points': points
       };
       let headerParams = {
       };
@@ -65,11 +69,11 @@ export default class DefaultApi {
       };
 
       let authNames = ['BearerAuth'];
-      let contentTypes = [];
+      let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = null;
+      let returnType = DirectionsCoordinatesPost200Response;
       return this.apiClient.callApi(
-        '/directions/coordinates', 'GET',
+        '/directions/coordinates', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

@@ -1,4 +1,4 @@
-# GasFeinApi.DirectionsCoordinatesGet500Response
+# GasFeinApi.DirectionsCoordinatesPost500Response
 
 ## Properties
 

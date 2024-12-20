@@ -13,7 +13,13 @@
 
 
 import ApiClient from './ApiClient';
-import DirectionsCoordinatesGet500Response from './model/DirectionsCoordinatesGet500Response';
+import DirectionsCoordinatesPost200Response from './model/DirectionsCoordinatesPost200Response';
+import DirectionsCoordinatesPost200ResponseRouteInner from './model/DirectionsCoordinatesPost200ResponseRouteInner';
+import DirectionsCoordinatesPost400Response from './model/DirectionsCoordinatesPost400Response';
+import DirectionsCoordinatesPost500Response from './model/DirectionsCoordinatesPost500Response';
+import DirectionsCoordinatesPostRequestInner from './model/DirectionsCoordinatesPostRequestInner';
+import DirectionsCoordinatesPostRequestInnerOneOf from './model/DirectionsCoordinatesPostRequestInnerOneOf';
+import DirectionsCoordinatesPostRequestInnerOneOf1 from './model/DirectionsCoordinatesPostRequestInnerOneOf1';
 import GasPricesProvinceCityGet200Response from './model/GasPricesProvinceCityGet200Response';
 import GasPricesProvinceCityGet200ResponseGasPricesInner from './model/GasPricesProvinceCityGet200ResponseGasPricesInner';
 import GasPricesProvinceCityGet500Response from './model/GasPricesProvinceCityGet500Response';
@@ -68,10 +74,46 @@ export {
     ApiClient,
 
     /**
-     * The DirectionsCoordinatesGet500Response model constructor.
-     * @property {module:model/DirectionsCoordinatesGet500Response}
+     * The DirectionsCoordinatesPost200Response model constructor.
+     * @property {module:model/DirectionsCoordinatesPost200Response}
      */
-    DirectionsCoordinatesGet500Response,
+    DirectionsCoordinatesPost200Response,
+
+    /**
+     * The DirectionsCoordinatesPost200ResponseRouteInner model constructor.
+     * @property {module:model/DirectionsCoordinatesPost200ResponseRouteInner}
+     */
+    DirectionsCoordinatesPost200ResponseRouteInner,
+
+    /**
+     * The DirectionsCoordinatesPost400Response model constructor.
+     * @property {module:model/DirectionsCoordinatesPost400Response}
+     */
+    DirectionsCoordinatesPost400Response,
+
+    /**
+     * The DirectionsCoordinatesPost500Response model constructor.
+     * @property {module:model/DirectionsCoordinatesPost500Response}
+     */
+    DirectionsCoordinatesPost500Response,
+
+    /**
+     * The DirectionsCoordinatesPostRequestInner model constructor.
+     * @property {module:model/DirectionsCoordinatesPostRequestInner}
+     */
+    DirectionsCoordinatesPostRequestInner,
+
+    /**
+     * The DirectionsCoordinatesPostRequestInnerOneOf model constructor.
+     * @property {module:model/DirectionsCoordinatesPostRequestInnerOneOf}
+     */
+    DirectionsCoordinatesPostRequestInnerOneOf,
+
+    /**
+     * The DirectionsCoordinatesPostRequestInnerOneOf1 model constructor.
+     * @property {module:model/DirectionsCoordinatesPostRequestInnerOneOf1}
+     */
+    DirectionsCoordinatesPostRequestInnerOneOf1,
 
     /**
      * The GasPricesProvinceCityGet200Response model constructor.

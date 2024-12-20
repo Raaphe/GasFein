@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new GasFeinApi.DefaultApi();
+    instance = new GasFeinApi.DirectionsCoordinatesPostRequestInner();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,17 +47,31 @@
       object[property] = value;
   }
 
-  describe('DefaultApi', function() {
-    describe('directionsCoordinatesPost', function() {
-      it('should call directionsCoordinatesPost successfully', function(done) {
-        //uncomment below and update the code to test directionsCoordinatesPost
-        //instance.directionsCoordinatesPost(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
-      });
+  describe('DirectionsCoordinatesPostRequestInner', function() {
+    it('should create an instance of DirectionsCoordinatesPostRequestInner', function() {
+      // uncomment below and update the code to test DirectionsCoordinatesPostRequestInner
+      //var instance = new GasFeinApi.DirectionsCoordinatesPostRequestInner();
+      //expect(instance).to.be.a(GasFeinApi.DirectionsCoordinatesPostRequestInner);
     });
+
+    it('should have the property longitude (base name: "longitude")', function() {
+      // uncomment below and update the code to test the property longitude
+      //var instance = new GasFeinApi.DirectionsCoordinatesPostRequestInner();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property latitude (base name: "latitude")', function() {
+      // uncomment below and update the code to test the property latitude
+      //var instance = new GasFeinApi.DirectionsCoordinatesPostRequestInner();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property address (base name: "address")', function() {
+      // uncomment below and update the code to test the property address
+      //var instance = new GasFeinApi.DirectionsCoordinatesPostRequestInner();
+      //expect(instance).to.be();
+    });
+
   });
 
 }));
