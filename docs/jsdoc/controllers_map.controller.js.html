@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>configs/orm.config.js - Documentation</title>
+    <title>controllers/map.controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,7 +37,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">configs/orm.config.js</h1>
+    <h1 class="page-title">controllers/map.controller.js</h1>
     
 
     
@@ -47,92 +47,28 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const { config } = require('./general.config.js');
-const { DataSource } = require('typeorm');
-const path = require('path');
+            <pre class="prettyprint source linenums"><code>const axios = require('axios')
+const { open_route_service }  = require('../configs/general.config');
 
 /**
- * @namespace ORM
- * @description Fournit des utilitaires pour gérer la connexion à la source de données.
+ * Contrôleur pour obtenir les coordonnées d'une itinéraire.
+ * @param {object} req - Objet de requête Express 
+ * @param {object} res - Objet de réponse Express.
  */
-
-/**
- * Indique si l'environnement est en mode développement.
- * @memberof ORM
- * @type {boolean}
- */
-const isDev = config.ENV === 'development';
-
-/**
- * Instance unique de la source de données, utilisée pour éviter les connexions multiples.
- * @memberof ORM
- * @type {DataSource|null}
- */
-let dataSourceInstance = null;
-
-/**
- * Crée et configure la source de données pour l'application.
- * @function createDataSource
- * @memberof ORM
- *
- * @returns {DataSource} Une instance de DataSource configurée.
- */
-const createDataSource = () => {
-  return new DataSource({
-    type: isDev ? 'sqlite' : 'mysql',
-    host: isDev ? undefined : config.DB_HOST,
-    port: isDev ? undefined : parseInt(config.DB_PORT, 10),
-    username: isDev ? undefined : config.DB_USERNAME,
-    password: isDev ? undefined : config.DB_PASSWORD,
-    database: isDev ? ':memory:' : config.DB_NAME,
-    synchronize: isDev,
-    logging: true,
-    entities: [path.join(__dirname, '../models/*.model.js')],
-    migrations: [],
-    subscribers: [],
-  });
-};
-
-/**
- * Initialise la connexion à la source de données si elle n'est pas déjà initialisée.
- * @function connectToDataSource
- * @memberof ORM
- *
- * @throws {Error} Si une erreur survient lors de l'initialisation.
- * @returns {DataSource} L'instance initialisée de DataSource.
- */
-const connectToDataSource = async () => {
-  if (!dataSourceInstance) {
+const directions = async (req, res)=> {
+    // const {coordinate} = req.data;
+    // if(!coordinate){throw new Error("Coordinate not found")}
     try {
-      const dataSource = createDataSource();
-      await dataSource.initialize();
-      dataSourceInstance = dataSource;
-    } catch (err) {
-      console.error("Erreur lors de l'initialisation de la source de données :", err);
-      throw err;
+        let response = await axios.get(open_route_service(["8.681495","49.41461"],["8.687872","49.420318"]))
+        console.log(response.data);
     }
-  }
-  return dataSourceInstance;
-};
-
-/**
- * Récupère l'instance initialisée de la source de données.
- * @function getDataSource
- * @memberof ORM
- *
- * @throws {Error} Si la source de données n'est pas initialisée.
- * @returns {DataSource} L'instance initialisée de DataSource.
- */
-const getDataSource = () => {
-  if (!dataSourceInstance) {
-    throw new Error('La source de données n’est pas initialisée. Appelez d’abord connectToDataSource.');
-  }
-  return dataSourceInstance;
-};
-
+    catch(err) {
+        console.error(err)
+        return res.status(401).json({message:"Error while trying fetch the directions"})
+    }
+}
 module.exports = {
-  connectToDataSource,
-  getDataSource
+    directions
 };</code></pre>
         </article>
     </section>
