@@ -130,6 +130,7 @@ Class | Method | HTTP request | Description
 *GasFeinApi.CarsApi* | [**usersUserIdCarsGet**](docs/CarsApi.md#usersUserIdCarsGet) | **GET** /users/{userId}/cars | Get all cars of a user
 *GasFeinApi.CarsApi* | [**usersUserIdCarsPost**](docs/CarsApi.md#usersUserIdCarsPost) | **POST** /users/{userId}/cars | Add a car to a user
 *GasFeinApi.GasApiApi* | [**gasPricesProvinceCityGet**](docs/GasApiApi.md#gasPricesProvinceCityGet) | **GET** /gas-prices/{province}/{city} | Get gas prices for a specific province and city
+*GasFeinApi.ServiceRouteApi* | [**directionsGet**](docs/ServiceRouteApi.md#directionsGet) | **GET** /directions/ | Get directions
 *GasFeinApi.StationsApi* | [**usersUserIdStationsGet**](docs/StationsApi.md#usersUserIdStationsGet) | **GET** /users/{userId}/stations | Get all stations of a user
 *GasFeinApi.StationsApi* | [**usersUserIdStationsPost**](docs/StationsApi.md#usersUserIdStationsPost) | **POST** /users/{userId}/stations | Add a station to a user
 *GasFeinApi.StationsApi* | [**usersUserIdStationsStationIdDelete**](docs/StationsApi.md#usersUserIdStationsStationIdDelete) | **DELETE** /users/{userId}/stations/{stationId} | Remove a station from a user&#39;s list of stations
@@ -143,6 +144,9 @@ Class | Method | HTTP request | Description
 
 ## Documentation for Models
 
+ - [GasFeinApi.DirectionsGet200Response](docs/DirectionsGet200Response.md)
+ - [GasFeinApi.DirectionsGet200ResponseDirectionsInner](docs/DirectionsGet200ResponseDirectionsInner.md)
+ - [GasFeinApi.DirectionsGet500Response](docs/DirectionsGet500Response.md)
  - [GasFeinApi.GasPricesProvinceCityGet200Response](docs/GasPricesProvinceCityGet200Response.md)
  - [GasFeinApi.GasPricesProvinceCityGet200ResponseGasPricesInner](docs/GasPricesProvinceCityGet200ResponseGasPricesInner.md)
  - [GasFeinApi.GasPricesProvinceCityGet500Response](docs/GasPricesProvinceCityGet500Response.md)

@@ -13,6 +13,9 @@
 
 
 import ApiClient from './ApiClient';
+import DirectionsGet200Response from './model/DirectionsGet200Response';
+import DirectionsGet200ResponseDirectionsInner from './model/DirectionsGet200ResponseDirectionsInner';
+import DirectionsGet500Response from './model/DirectionsGet500Response';
 import GasPricesProvinceCityGet200Response from './model/GasPricesProvinceCityGet200Response';
 import GasPricesProvinceCityGet200ResponseGasPricesInner from './model/GasPricesProvinceCityGet200ResponseGasPricesInner';
 import GasPricesProvinceCityGet500Response from './model/GasPricesProvinceCityGet500Response';
@@ -23,6 +26,7 @@ import UsersUserIdPutRequest from './model/UsersUserIdPutRequest';
 import UsersUserIdStationsPostRequest from './model/UsersUserIdStationsPostRequest';
 import CarsApi from './api/CarsApi';
 import GasApiApi from './api/GasApiApi';
+import ServiceRouteApi from './api/ServiceRouteApi';
 import StationsApi from './api/StationsApi';
 import UsersApi from './api/UsersApi';
 
@@ -64,6 +68,24 @@ export {
      * @property {module:ApiClient}
      */
     ApiClient,
+
+    /**
+     * The DirectionsGet200Response model constructor.
+     * @property {module:model/DirectionsGet200Response}
+     */
+    DirectionsGet200Response,
+
+    /**
+     * The DirectionsGet200ResponseDirectionsInner model constructor.
+     * @property {module:model/DirectionsGet200ResponseDirectionsInner}
+     */
+    DirectionsGet200ResponseDirectionsInner,
+
+    /**
+     * The DirectionsGet500Response model constructor.
+     * @property {module:model/DirectionsGet500Response}
+     */
+    DirectionsGet500Response,
 
     /**
      * The GasPricesProvinceCityGet200Response model constructor.
@@ -124,6 +146,12 @@ export {
     * @property {module:api/GasApiApi}
     */
     GasApiApi,
+
+    /**
+    * The ServiceRouteApi service constructor.
+    * @property {module:api/ServiceRouteApi}
+    */
+    ServiceRouteApi,
 
     /**
     * The StationsApi service constructor.
