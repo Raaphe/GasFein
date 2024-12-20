@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Config Generaux - Documentation</title>
+    <title>controllers/map.controller.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,142 +37,41 @@
 
 <div id="main">
     
-    <h1 class="page-title">Config Generaux</h1>
+    <h1 class="page-title">controllers/map.controller.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-        
-            Namespace
-        
-        </h2>
-        
-    
-</header>
-
-<article>
-    
-        <div class="container-overview">
-        
-            
-
-
-    
-
-    <h4 class="name" id="Config Generaux">Config Generaux</h4>
-
-    
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Fournit les donnes generaux necessaires de l'application.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="configs_general.config.js.html">configs/general.config.js</a>, <a href="configs_general.config.js.html#line5">line 5</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        </div>
-    
-
-    
-
-    
-
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const axios = require('axios')
+const { open_route_service }  = require('../configs/general.config');
+
+/**
+ * Contrôleur pour obtenir les coordonnées d'une itinéraire.
+ * @param {object} req - Objet de requête Express 
+ * @param {object} res - Objet de réponse Express.
+ */
+const directions = async (req, res)=> {
+    // const {coordinate} = req.data;
+    // if(!coordinate){throw new Error("Coordinate not found")}
+    try {
+        let response = await axios.get(open_route_service(["8.681495","49.41461"],["8.687872","49.420318"]))
+        console.log(response.data);
+    }
+    catch(err) {
+        console.error(err)
+        return res.status(401).json({message:"Error while trying fetch the directions"})
+    }
+}
+module.exports = {
+    directions
+};</code></pre>
+        </article>
+    </section>
 
 
 

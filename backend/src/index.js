@@ -9,6 +9,7 @@ require('reflect-metadata');
 
 const userRoutes = require('./routes/user.route.js');
 const gasApiRoutes = require('./routes/gas-api.route.js');
+const mapRoutes = require('./routes/map.route')
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,7 @@ connectToDataSource()
 
     app.use('/api', userRoutes);
     app.use('/api', gasApiRoutes);
+    app.use('/api', mapRoutes);
     
     app.listen(config.PORT, () => {
       console.log(`Server is running on http://localhost:${config.PORT}`);

@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { Text, View, StyleSheet } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Polyline } from "react-native-maps";
+import { config } from "../util/Config/general.config";
+
 
 export const MapScreen = () => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
+  const [routeCoordinates, setRouteCoordinates] = useState([]);
+
+  const destination = {
+    latitude: 37.7749,
+    longitude: -122.4194,
+  };
 
   const getUserPosition = async () => {
     try {
@@ -16,6 +24,13 @@ export const MapScreen = () => {
       }
       const userLocation = await Location.getCurrentPositionAsync({});
       setLocation(userLocation);
+
+      const route = [
+        { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
+        { latitude: (userLocation.coords.latitude + destination.latitude) / 2, longitude: (userLocation.coords.longitude + destination.longitude) / 2 },
+        destination,
+      ];
+      setRouteCoordinates(route);
     } catch (err) {
       setError("Error fetching location");
       console.error(err);
@@ -56,6 +71,12 @@ export const MapScreen = () => {
             longitude: location.coords.longitude,
           }}
           title="Your Location"
+        />
+        <Marker coordinate={destination} title="Destination" />
+        <Polyline
+          coordinates={routeCoordinates}
+          strokeColor="#FF0000"
+          strokeWidth={3}
         />
       </MapView>
     </View>
