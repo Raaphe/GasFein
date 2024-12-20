@@ -1,3 +1,4 @@
+const cors = require('cors');
 const { connectToDataSource } = require('./configs/orm.config.js');
 const { config } = require('./configs/general.config.js');
 const express = require('express');
@@ -13,7 +14,7 @@ const mapRoutes = require('./routes/map.route')
 
 const app = express();
 app.use(express.json());
-
+app.use(cors());
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use(`${config.BASE_PATH}/docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.get(`${config.BASE_PATH}/docs.json`, (req, res) => res.json(swaggerDocs));

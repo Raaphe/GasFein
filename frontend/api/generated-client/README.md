@@ -129,7 +129,7 @@ Class | Method | HTTP request | Description
 *GasFeinApi.CarsApi* | [**usersUserIdCarsCarIdDelete**](docs/CarsApi.md#usersUserIdCarsCarIdDelete) | **DELETE** /users/{userId}/cars/{carId} | Remove a car from a user&#39;s list of cars
 *GasFeinApi.CarsApi* | [**usersUserIdCarsGet**](docs/CarsApi.md#usersUserIdCarsGet) | **GET** /users/{userId}/cars | Get all cars of a user
 *GasFeinApi.CarsApi* | [**usersUserIdCarsPost**](docs/CarsApi.md#usersUserIdCarsPost) | **POST** /users/{userId}/cars | Add a car to a user
-*GasFeinApi.DefaultApi* | [**directionsCoordinatesGet**](docs/DefaultApi.md#directionsCoordinatesGet) | **GET** /directions/coordinates | Get directions with multiple coordinates
+*GasFeinApi.DefaultApi* | [**directionsCoordinatesPost**](docs/DefaultApi.md#directionsCoordinatesPost) | **POST** /directions/coordinates | Get directions with multiple points
 *GasFeinApi.GasApiApi* | [**gasPricesProvinceCityGet**](docs/GasApiApi.md#gasPricesProvinceCityGet) | **GET** /gas-prices/{province}/{city} | Get gas prices for a specific province and city
 *GasFeinApi.StationsApi* | [**usersUserIdStationsGet**](docs/StationsApi.md#usersUserIdStationsGet) | **GET** /users/{userId}/stations | Get all stations of a user
 *GasFeinApi.StationsApi* | [**usersUserIdStationsPost**](docs/StationsApi.md#usersUserIdStationsPost) | **POST** /users/{userId}/stations | Add a station to a user
@@ -144,7 +144,13 @@ Class | Method | HTTP request | Description
 
 ## Documentation for Models
 
- - [GasFeinApi.DirectionsCoordinatesGet500Response](docs/DirectionsCoordinatesGet500Response.md)
+ - [GasFeinApi.DirectionsCoordinatesPost200Response](docs/DirectionsCoordinatesPost200Response.md)
+ - [GasFeinApi.DirectionsCoordinatesPost200ResponseRouteInner](docs/DirectionsCoordinatesPost200ResponseRouteInner.md)
+ - [GasFeinApi.DirectionsCoordinatesPost400Response](docs/DirectionsCoordinatesPost400Response.md)
+ - [GasFeinApi.DirectionsCoordinatesPost500Response](docs/DirectionsCoordinatesPost500Response.md)
+ - [GasFeinApi.DirectionsCoordinatesPostRequestInner](docs/DirectionsCoordinatesPostRequestInner.md)
+ - [GasFeinApi.DirectionsCoordinatesPostRequestInnerOneOf](docs/DirectionsCoordinatesPostRequestInnerOneOf.md)
+ - [GasFeinApi.DirectionsCoordinatesPostRequestInnerOneOf1](docs/DirectionsCoordinatesPostRequestInnerOneOf1.md)
  - [GasFeinApi.GasPricesProvinceCityGet200Response](docs/GasPricesProvinceCityGet200Response.md)
  - [GasFeinApi.GasPricesProvinceCityGet200ResponseGasPricesInner](docs/GasPricesProvinceCityGet200ResponseGasPricesInner.md)
  - [GasFeinApi.GasPricesProvinceCityGet500Response](docs/GasPricesProvinceCityGet500Response.md)

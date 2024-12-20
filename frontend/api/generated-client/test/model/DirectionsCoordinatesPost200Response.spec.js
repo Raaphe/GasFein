@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new GasFeinApi.DefaultApi();
+    instance = new GasFeinApi.DirectionsCoordinatesPost200Response();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,17 +47,25 @@
       object[property] = value;
   }
 
-  describe('DefaultApi', function() {
-    describe('directionsCoordinatesPost', function() {
-      it('should call directionsCoordinatesPost successfully', function(done) {
-        //uncomment below and update the code to test directionsCoordinatesPost
-        //instance.directionsCoordinatesPost(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
-      });
+  describe('DirectionsCoordinatesPost200Response', function() {
+    it('should create an instance of DirectionsCoordinatesPost200Response', function() {
+      // uncomment below and update the code to test DirectionsCoordinatesPost200Response
+      //var instance = new GasFeinApi.DirectionsCoordinatesPost200Response();
+      //expect(instance).to.be.a(GasFeinApi.DirectionsCoordinatesPost200Response);
     });
+
+    it('should have the property message (base name: "message")', function() {
+      // uncomment below and update the code to test the property message
+      //var instance = new GasFeinApi.DirectionsCoordinatesPost200Response();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property route (base name: "route")', function() {
+      // uncomment below and update the code to test the property route
+      //var instance = new GasFeinApi.DirectionsCoordinatesPost200Response();
+      //expect(instance).to.be();
+    });
+
   });
 
 }));
