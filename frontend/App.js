@@ -12,13 +12,14 @@ import { LoginScreen } from "./Pages/LoginScreen";
 import { SettingsScreen } from "./Pages/SettingsScreen";
 import { AuthProvider } from "./Providers/AuthProvider";
 import { LogoutScreen } from "./Pages/LogoutScreen";
+import { AuthContext } from "./Providers/AuthProvider";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const BottomTabs = () => {
     const { isDarkTheme, setDarkTheme } = useContext(ThemeContext);
-    const { authToken } = useContext();
+    const { authToken } = useContext(AuthContext);
 
     return (
         <Tab.Navigator
@@ -37,7 +38,7 @@ const BottomTabs = () => {
 };
 
 const DrawerNavigator = () => {
-    const { isAuth } = useContext(AuthContext);
+    const { authToken } = useContext(AuthContext);
 
     return (
         <Drawer.Navigator screenOptions={{ headerShown: false }}>

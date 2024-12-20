@@ -4,7 +4,7 @@ import { getToken, logout, login, signUp } from '../util/ClientAuthService';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [authToken, setAuthToken] = useState(false);
+    const [authToken, setAuthToken] = useState(true);
 
     useEffect(() => {
         const checkAuth = async () => {
