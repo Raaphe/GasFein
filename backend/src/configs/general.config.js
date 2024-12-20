@@ -76,6 +76,24 @@ const config = {
    * @type {string}
    */
   JWT_PRIVATE_KEY: process.env.JWT_PRIVATE_KEY || 'abc-123',
+
+  /**
+   * Token GAsFein
+   * @type {number}
+   */
+  GASFEIN_TKN: process.env.GASFEIN_TOKEN || "",
+
 };
 
-module.exports = { config };
+const open_route_service = (start, end) =>{
+  
+   /**
+   * Base url for api openroute
+   * @type {String}
+   */
+  
+  return `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${config.GASFEIN_TKN}&start=${start[0]},${start[1]}&end=${end[0]},${end[1]}`
+}
+
+
+module.exports = { config, open_route_service };
