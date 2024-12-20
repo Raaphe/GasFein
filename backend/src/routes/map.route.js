@@ -14,7 +14,7 @@ const router = express.Router();
  *         required: true
  *         schema:
  *           type: string
- *           description: JSON array of coordinates
+ *           description: JSON array of coordinates [{address:""},{long:"",lat:""}]
  *     responses:
  *       200:
  *         description: Successfully fetched directions
