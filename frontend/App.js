@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ThemeContext, ThemeProvider } from "./Providers/ThemeProvider";
 import { useContext } from "react";
 
+
+import { HomeScreen } from "./Pages/HomeScreen";
 import { MapScreen } from "./Pages/MapScreen";
 import { CarScreen } from "./Pages/CarScreen";
 import { LoginScreen } from "./Pages/LoginScreen";
@@ -32,6 +34,7 @@ const BottomTabs = () => {
         >
             <Tab.Screen name="Map" component={MapScreen} />
             <Tab.Screen name="Car" component={CarScreen} />
+            <Tab.Screen name="Home" component={HomeScreen} />
             {!authToken && <Tab.Screen name="Login" component={LoginScreen} />} 
         </Tab.Navigator>
     );
