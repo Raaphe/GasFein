@@ -32,7 +32,7 @@ class ApiClient {
      * Overrides the default value set in spec file if present
      * @param {String} basePath
      */
-    constructor(basePath = 'http://localhost:3000/api') {
+    constructor(basePath = 'http://10.0.0.37:3000/api') {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}

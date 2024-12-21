@@ -4,17 +4,22 @@ import { Text, TextInput, Button } from 'react-native-paper';
 import { useDarkMode } from "../Providers/DarkModeProvider";
 import { darkTheme, lightTheme } from "../App";
 import {useNavigation} from "@react-navigation/native";
+import {useAuth} from "../Providers/AuthProvider";
 
 export const RegistrationScreen = ({ navigation }) => {
     const [form, setForm] = useState({
         username: '',
         email: '',
         password: '',
+        firstName: '',
+        lastName: '',
         confirmPassword: '',
     });
     const { isDarkTheme } = useDarkMode();
     const [theme, setTheme] = useState(lightTheme);
     const nav = useNavigation();
+    const { authToken, loginUser, logoutUser, register } = useAuth();
+
 
     useEffect(() => {
         setTheme(isDarkTheme ? darkTheme : lightTheme);
@@ -25,21 +30,27 @@ export const RegistrationScreen = ({ navigation }) => {
     };
 
     const handleRegister = async () => {
-        if (form.password !== form.confirmPassword) {
+        if (form.password.trim() !== form.confirmPassword.trim()) {
             alert("Passwords do not match!");
             return;
         }
         try {
-            // Logic to handle registration
+            register({
+                password: form.password.trim(),
+                firstName: form.firstName,
+                lastName: form.lastName.trim(),
+                email: form.email.trim(),
+                imageId: "1",
+            });
             alert("Registration successful!");
-            nav.navigate("Login"); // Redirect to login page
+            nav.navigate("Login");
         } catch (e) {
             console.error("Registration error:", e);
         }
     };
 
     const handleLoginRedirect = () => {
-        navigation.navigate("Login");
+        nav.navigate("Login");
     };
 
     return (
@@ -61,8 +72,8 @@ export const RegistrationScreen = ({ navigation }) => {
                 mode="outlined"
                 label="First Name"
                 placeholder="Enter your First Name"
-                value={form.email}
-                onChangeText={(value) => handleInputChange('email', value)}
+                value={form.firstName}
+                onChangeText={(value) => handleInputChange('firstName', value)}
                 style={[
                     styles.input,
                     { backgroundColor: theme.colors.surface },
@@ -83,8 +94,8 @@ export const RegistrationScreen = ({ navigation }) => {
                 mode="outlined"
                 label="Last Name"
                 placeholder="Enter your Last Name"
-                value={form.email}
-                onChangeText={(value) => handleInputChange('email', value)}
+                value={form.lastName}
+                onChangeText={(value) => handleInputChange('lastName', value)}
                 style={[
                     styles.input,
                     { backgroundColor: theme.colors.surface },
@@ -181,11 +192,9 @@ export const RegistrationScreen = ({ navigation }) => {
                 Register
             </Button>
             <Button
-
+                mode="outlined"
                 onPress={() => nav.goBack()}
                 style={styles.button}
-                buttonColor={theme.colors.secondary}
-                textColor={theme.colors.onPrimary}
             >
                 Cancel
             </Button>
