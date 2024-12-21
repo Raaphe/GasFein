@@ -4,6 +4,10 @@ import { Text, View, StyleSheet } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import axios from "axios";
 
+
+// ---- Add your Ip buddy (Juste pour le dev tqt)
+const Backend_IP ="192.168.0.0"
+
 export const MapScreen = () => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
@@ -33,7 +37,7 @@ export const MapScreen = () => {
     try {
       const res = await axios.post(
         //------------------------ Must add your Backend ip -------------------
-        'http://ip:3000/api/directions/coordinates', [location, destination]
+        `http://${Backend_IP}:3000/api/directions/coordinates`, [location, destination]
       );
       setRouteCoordinates(res.data);
     } catch (err) {
