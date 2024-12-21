@@ -12,7 +12,7 @@ const path = require('path');
  * @memberof ORM
  * @type {boolean}
  */
-const isDev = config.ENV === 'development';
+const isDev = true;
 
 /**
  * Instance unique de la source de données, utilisée pour éviter les connexions multiples.
