@@ -22,17 +22,20 @@ generateSwaggerFile('../docs/swagger/swagger.json', swaggerOptions);
 app.get('/', (req, res) => res.redirect(`${config.BASE_PATH}/docs`));
 
 connectToDataSource()
-  .then(() => {
-    console.log("\n\nData Source has been initialized!");
+    .then(() => {
+        console.log("\n\nData Source has been initialized!");
 
-    app.use('/api', userRoutes);
-    app.use('/api', gasApiRoutes);
-    app.use('/api', mapRoutes);
-    
-    app.listen(config.PORT, () => {
-      console.log(`Server is running on http://localhost:${config.PORT}`);
+        app.use('/api', userRoutes);
+        app.use('/api', gasApiRoutes);
+        app.use('/api', mapRoutes);
+        app.listen(Number(config.ENV), "0.0.0.0", async () => {
+            if (config.ENV === 'development') {
+                console.log(`Server is running on http://localhost:${config.PORT}`);
+            } else if (config.ENV === 'production') {
+                console.log(`Server is running on https://gasfein.onrender.com`);
+            }
+        });
+    })
+    .catch((err) => {
+        console.error("Database connection failed:", err);
     });
-  })
-  .catch((err) => {
-    console.error("Database connection failed:", err);
-  });

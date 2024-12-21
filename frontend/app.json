@@ -6,6 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "developmentClient": {
+      "silentLaunch": false
+    },
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -20,6 +23,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
+    },
+    "extra": {
+      "GASFEIN_TOKEN": "5b3ce3597851110001cf6248a9793b825c994cb1860795dd9da21586"
     },
     "web": {
       "favicon": "./assets/favicon.png"

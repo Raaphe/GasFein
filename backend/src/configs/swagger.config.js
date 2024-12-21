@@ -14,7 +14,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${config.PORT}/api`,
+        url: `http${config.ENV === "production" ? "s" : ""}://${config.ENV === "production" ? "gasfein.onrender.com" : `localhost:${config.PORT}`}/api`,
         description: 'Development server (HTTP)',
       },
     ],

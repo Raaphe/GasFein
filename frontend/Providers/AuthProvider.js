@@ -1,16 +1,16 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { getToken, logout, login, signUp } from '../util/ClientAuthService';
- 
-export const AuthContext = createContext();
+import React, {createContext, useEffect, useState} from 'react';
+import {getToken, login, logout, signUp} from '../util/ClientAuthService';
+
+export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-    const [authToken, setAuthToken] = useState(false);
+    const [authToken, setAuthToken] = useState("");
 
     useEffect(() => {
         const checkAuth = async () => {
             const token = await getToken();
             if (token) {
-                setAuthToken(token);
+                setAuthToken(token ?? "");
             }
         }
         checkAuth();
@@ -26,11 +26,17 @@ export const AuthProvider = ({ children }) => {
         await logout();
     }
 
-    const register = ({ password, firstName, lastName, email, imageId }) => {
+    const register = async ({password, firstName, lastName, email, imageId}) => {
         try {
-            signUp({ password, firstName, lastName, email, imageId });
+            await signUp({password, firstName, lastName, email, imageId})
+                .then(result => {
+                    return result;
+                }).catch(error => {
+                    console.log(error);
+                    return "";
+                });
         } catch (e) {
-
+            console.log('error', e);
         }
     }
 
