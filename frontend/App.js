@@ -4,6 +4,8 @@ import { DarkModeProvider, useDarkMode } from "./Providers/DarkModeProvider";
 import { createTheme, ThemeProvider } from "@shopify/restyle";
 import React from "react";
 
+
+import { HomeScreen } from "./Pages/HomeScreen";
 import { MapScreen } from "./Pages/MapScreen";
 import { CarScreen } from "./Pages/CarScreen";
 import { LoginScreen } from "./Pages/LoginScreen";
@@ -87,6 +89,7 @@ const BottomTabs = () => {
     const tabScreens = [
         <Tab.Screen key="Map" name="Map" component={MapScreen} />,
         <Tab.Screen key="Car" name="Car" component={CarScreen} />,
+        <Tab.Screen key="Home" name="Home" component={HomeScreen} />,
     ];
 
     if (!authToken) {

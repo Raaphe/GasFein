@@ -4,15 +4,17 @@ All URIs are relative to *http://localhost:3000/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**directionsCoordinatesGet**](DefaultApi.md#directionsCoordinatesGet) | **GET** /directions/coordinates | Get directions with multiple coordinates
+[**directionsCoordinatesPost**](DefaultApi.md#directionsCoordinatesPost) | **POST** /directions/coordinates | Get directions with multiple points
 
 
 
-## directionsCoordinatesGet
+## directionsCoordinatesPost
 
-> directionsCoordinatesGet(points)
+> DirectionsCoordinatesPost200Response directionsCoordinatesPost(directionsCoordinatesPostRequestInner)
 
-Get directions with multiple coordinates
+Get directions with multiple points
+
+Accepts an array of objects containing either coordinates (longitude and latitude) or an address.
 
 ### Example
 
@@ -24,12 +26,12 @@ let BearerAuth = defaultClient.authentications['BearerAuth'];
 BearerAuth.accessToken = "YOUR ACCESS TOKEN"
 
 let apiInstance = new GasFeinApi.DefaultApi();
-let points = "points_example"; // String | 
-apiInstance.directionsCoordinatesGet(points, (error, data, response) => {
+let directionsCoordinatesPostRequestInner = [new GasFeinApi.DirectionsCoordinatesPostRequestInner()]; // [DirectionsCoordinatesPostRequestInner] | 
+apiInstance.directionsCoordinatesPost(directionsCoordinatesPostRequestInner, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 });
 ```
@@ -39,11 +41,11 @@ apiInstance.directionsCoordinatesGet(points, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **points** | **String**|  | 
+ **directionsCoordinatesPostRequestInner** | [**[DirectionsCoordinatesPostRequestInner]**](DirectionsCoordinatesPostRequestInner.md)|  | 
 
 ### Return type
 
-null (empty response body)
+[**DirectionsCoordinatesPost200Response**](DirectionsCoordinatesPost200Response.md)
 
 ### Authorization
 
@@ -51,6 +53,6 @@ null (empty response body)
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
+- **Content-Type**: application/json
 - **Accept**: application/json
 

@@ -14,18 +14,18 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The DirectionsCoordinatesGet500Response model module.
- * @module model/DirectionsCoordinatesGet500Response
+ * The DirectionsCoordinatesPost500Response model module.
+ * @module model/DirectionsCoordinatesPost500Response
  * @version 1.0.0
  */
-class DirectionsCoordinatesGet500Response {
+class DirectionsCoordinatesPost500Response {
     /**
-     * Constructs a new <code>DirectionsCoordinatesGet500Response</code>.
-     * @alias module:model/DirectionsCoordinatesGet500Response
+     * Constructs a new <code>DirectionsCoordinatesPost500Response</code>.
+     * @alias module:model/DirectionsCoordinatesPost500Response
      */
     constructor() { 
         
-        DirectionsCoordinatesGet500Response.initialize(this);
+        DirectionsCoordinatesPost500Response.initialize(this);
     }
 
     /**
@@ -37,15 +37,15 @@ class DirectionsCoordinatesGet500Response {
     }
 
     /**
-     * Constructs a <code>DirectionsCoordinatesGet500Response</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>DirectionsCoordinatesPost500Response</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/DirectionsCoordinatesGet500Response} obj Optional instance to populate.
-     * @return {module:model/DirectionsCoordinatesGet500Response} The populated <code>DirectionsCoordinatesGet500Response</code> instance.
+     * @param {module:model/DirectionsCoordinatesPost500Response} obj Optional instance to populate.
+     * @return {module:model/DirectionsCoordinatesPost500Response} The populated <code>DirectionsCoordinatesPost500Response</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new DirectionsCoordinatesGet500Response();
+            obj = obj || new DirectionsCoordinatesPost500Response();
 
             if (data.hasOwnProperty('message')) {
                 obj['message'] = ApiClient.convertToType(data['message'], 'String');
@@ -55,9 +55,9 @@ class DirectionsCoordinatesGet500Response {
     }
 
     /**
-     * Validates the JSON data with respect to <code>DirectionsCoordinatesGet500Response</code>.
+     * Validates the JSON data with respect to <code>DirectionsCoordinatesPost500Response</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>DirectionsCoordinatesGet500Response</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>DirectionsCoordinatesPost500Response</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
@@ -76,12 +76,12 @@ class DirectionsCoordinatesGet500Response {
 /**
  * @member {String} message
  */
-DirectionsCoordinatesGet500Response.prototype['message'] = undefined;
+DirectionsCoordinatesPost500Response.prototype['message'] = undefined;
 
 
 
 
 
 
-export default DirectionsCoordinatesGet500Response;
+export default DirectionsCoordinatesPost500Response;
 

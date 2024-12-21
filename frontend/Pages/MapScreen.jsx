@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { Text, View, StyleSheet } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
-import { config } from "../util/Config/general.config";
+import axios from "axios";
 
+
+// ---- Add your Ip buddy (Juste pour le dev tqt)
+const Backend_IP ="192.168.0.0"
 
 export const MapScreen = () => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
   const [routeCoordinates, setRouteCoordinates] = useState([]);
-
-  const destination = {
-    latitude: 37.7749,
-    longitude: -122.4194,
-  };
+  const [destination, setDestination] = useState({ address: "8855 Ch de Chambly" });
+  const [isLoading, setIsLoading] = useState(true);
 
   const getUserPosition = async () => {
     try {
@@ -23,17 +23,25 @@ export const MapScreen = () => {
         return;
       }
       const userLocation = await Location.getCurrentPositionAsync({});
-      setLocation(userLocation);
-
-      const route = [
-        { latitude: userLocation.coords.latitude, longitude: userLocation.coords.longitude },
-        { latitude: (userLocation.coords.latitude + destination.latitude) / 2, longitude: (userLocation.coords.longitude + destination.longitude) / 2 },
-        destination,
-      ];
-      setRouteCoordinates(route);
+      setLocation({
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+      });
     } catch (err) {
       setError("Error fetching location");
       console.error(err);
+    }
+  };
+
+  const fetchingRoute = async () => {
+    try {
+      const res = await axios.post(
+        //------------------------ Must add your Backend ip -------------------
+        `http://${Backend_IP}:3000/api/directions/coordinates`, [location, destination]
+      );
+      setRouteCoordinates(res.data);
+    } catch (err) {
+      console.error("Error fetching route:", err);
     }
   };
 
@@ -41,7 +49,19 @@ export const MapScreen = () => {
     getUserPosition();
   }, []);
 
-  if (!location) {
+  useEffect(() => {
+    if (location) {
+      fetchingRoute();
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (routeCoordinates.length > 0) {
+      setIsLoading(false);
+    }
+  }, [routeCoordinates]);
+
+  if (!location || isLoading) {
     return (
       <View style={styles.loadingContainer}>
         {error ? (
@@ -58,26 +78,33 @@ export const MapScreen = () => {
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+          latitude: location.latitude,
+          longitude: location.longitude,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
         showsUserLocation={true}
       >
-        <Marker
-          coordinate={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          }}
-          title="Your Location"
-        />
-        <Marker coordinate={destination} title="Destination" />
-        <Polyline
-          coordinates={routeCoordinates}
-          strokeColor="#FF0000"
-          strokeWidth={3}
-        />
+        <Marker coordinate={location} title="Your Location" />
+        {routeCoordinates.length > 0 && (
+          <Marker
+            coordinate={{
+              latitude: routeCoordinates[routeCoordinates.length - 1][1],
+              longitude: routeCoordinates[routeCoordinates.length - 1][0],
+            }}
+            title="Destination"
+          />
+        )}
+        {routeCoordinates.length > 0 && (
+          <Polyline
+            coordinates={routeCoordinates.map(coord => ({
+              latitude: coord[1],
+              longitude: coord[0],
+            }))}
+            strokeColor="#FF0000"
+            strokeWidth={3}
+          />
+        )}
       </MapView>
     </View>
   );
