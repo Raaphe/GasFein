@@ -6,7 +6,7 @@ import axios from "axios";
 
 
 // ---- Add your Ip buddy (Juste pour le dev tqt)
-const Backend_IP ="192.168.0.0"
+const Backend_IP ="192.168.2.0"
 
 export const MapScreen = () => {
   const [location, setLocation] = useState(null);

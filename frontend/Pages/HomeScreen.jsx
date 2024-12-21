@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 const provinces = [
     { label: "Ontario", value: "Ontario" },
@@ -54,10 +55,11 @@ const Dropdown = ({ label, data, onSelect, selectedValue }) => {
     );
 };
 
-export const HomeScreen = () => {
+export const HomeScreen = ({ navigation }) => {
     const [province, setProvince] = useState(null);
     const [city, setCity] = useState(null);
     const [stations, setStations] = useState([]);
+
 
     const handleProvinceSelect = (selectedProvince) => {
         setProvince(selectedProvince);
@@ -80,6 +82,7 @@ export const HomeScreen = () => {
 
     const handleStationClick = (station) => {
         console.log('Station:', station);
+        navigation.navigate("Station", { station })
     };
 
     return (
@@ -116,7 +119,6 @@ export const HomeScreen = () => {
                             />
                             <View style={styles.stationInfo}>
                                 <Text style={styles.stationName}>{station.station_name}</Text>
-                                <Text style={styles.stationAddress}>{station.address}</Text>
                                 <Text style={styles.stationPrice}>{station.price}¢/L</Text>
                                 <Text style={styles.stationLastUpdate}>
                                     Updated {station.last_update} ago
