@@ -1,10 +1,8 @@
-import "@/global.css";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { ThemeContext, ThemeProvider } from "./Providers/ThemeProvider";
-import { useContext } from "react";
+import { DarkModeProvider, useDarkMode } from "./Providers/DarkModeProvider";
+import { createTheme, ThemeProvider } from "@shopify/restyle";
+import React from "react";
 
 
 import { HomeScreen } from "./Pages/HomeScreen";
@@ -12,71 +10,191 @@ import { MapScreen } from "./Pages/MapScreen";
 import { CarScreen } from "./Pages/CarScreen";
 import { LoginScreen } from "./Pages/LoginScreen";
 import { SettingsScreen } from "./Pages/SettingsScreen";
-import { AuthProvider } from "./Providers/AuthProvider";
+import { AuthProvider, useAuth } from "./Providers/AuthProvider";
 import { LogoutScreen } from "./Pages/LogoutScreen";
-import { AuthContext } from "./Providers/AuthProvider";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { DarkModeToggle } from "./Components/DarkModeToggle";
+import {createStackNavigator} from "@react-navigation/native/src/__stubs__/createStackNavigator";
+import {RegistrationScreen} from "./Pages/RegistrationScreen";
 
+// Define light and dark themes
+export const lightTheme = createTheme({
+    colors: {
+        background: '#ffffff',
+        text: '#000000',
+        primary: '#6200ee',
+        secondary: '#534f4f',
+        border: '#ccc',
+        surface: '#ffffff', // For components like cards
+        tabBarBackground: '#f8f8f8', // Tab bar background for light mode
+        drawerBackground: '#ffffff', // Drawer background for light mode
+        drawerHeaderBackground: '#ccc', // Light header color
+    },
+    spacing: {
+        s: 8,
+        m: 16,
+        l: 32,
+    },
+    typography: {
+        title: {
+            fontSize: 24,
+            fontWeight: 'bold',
+        },
+        body: {
+            fontSize: 16,
+            fontWeight: 'normal',
+        },
+    },
+});
+
+export const darkTheme = createTheme({
+    colors: {
+        background: '#000000',
+        text: '#ffffff',
+        primary: '#6200ee',
+        secondary: '#534f4f',
+        border: '#ccc',
+        surface: '#121212', // Darker surface color for better contrast
+        tabBarBackground: '#333333', // Tab bar background for dark mode
+        drawerBackground: '#121212', // Drawer background for dark mode
+        drawerHeaderBackground: '#333333', // Dark header color (can be darker for contrast)
+    },
+    spacing: {
+        s: 8,
+        m: 16,
+        l: 32,
+    },
+    typography: {
+        title: {
+            fontSize: 24,
+            fontWeight: 'bold',
+        },
+        body: {
+            fontSize: 16,
+            fontWeight: 'normal',
+        },
+    },
+});
+
+// Create the drawer and tab navigators
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
+// Bottom Tabs Component with dynamic styles
 const BottomTabs = () => {
-    const { isDarkTheme, setDarkTheme } = useContext(ThemeContext);
-    const { authToken } = useContext(AuthContext);
+    const { authToken } = useAuth();
+    const { isDarkTheme } = useDarkMode();
+
+    const tabScreens = [
+        <Tab.Screen key="Map" name="Map" component={MapScreen} />,
+        <Tab.Screen key="Car" name="Car" component={CarScreen} />,
+        <Tab.Screen key="Home" name="Home" component={HomeScreen} />,
+    ];
+
+    if (!authToken) {
+        tabScreens.push(<Tab.Screen key="Login" name="Login" component={LoginScreen} />);
+        tabScreens.push(
+            <Tab.Screen
+                key="Toggle"
+                name="Toggle"
+                component={DarkModeToggle}
+                options={{
+                    tabBarButton: () => <DarkModeToggle />,
+                }}
+            />
+        );
+    } else {
+        tabScreens.push(
+            <Tab.Screen
+                key="Toggle"
+                name="Toggle"
+                component={DarkModeToggle}
+                options={{
+                    tabBarButton: () => <DarkModeToggle />,
+                }}
+            />
+        );
+    }
 
     return (
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
-                tabBarStyle: { backgroundColor: "#1E1E1E" },
-                tabBarActiveTintColor: "white",
-                tabBarInactiveTintColor: "gray",
+                tabBarStyle: {
+                    backgroundColor: isDarkTheme
+                        ? darkTheme.colors.tabBarBackground
+                        : lightTheme.colors.tabBarBackground,
+                },
+                tabBarActiveTintColor: isDarkTheme
+                    ? darkTheme.colors.text
+                    : lightTheme.colors.text,
+                tabBarInactiveTintColor: 'gray',
             }}
+            id="tabs"
         >
-            <Tab.Screen name="Map" component={MapScreen} />
-            <Tab.Screen name="Car" component={CarScreen} />
-            <Tab.Screen name="Home" component={HomeScreen} />
-            {!authToken && <Tab.Screen name="Login" component={LoginScreen} />} 
+            {tabScreens}
         </Tab.Navigator>
     );
 };
 
+
+// Drawer Navigator with dynamic styles
 const DrawerNavigator = () => {
-    const { authToken } = useContext(AuthContext);
+    const { authToken } = useAuth();
+    const { isDarkTheme } = useDarkMode();
+
+    const drawerScreens = [
+        <Drawer.Screen key="Home" name="Home" component={BottomTabs} />,
+        <Drawer.Screen key="Settings" name="Settings" component={SettingsScreen} />,
+    ];
+
+
+    if (authToken) {
+        drawerScreens.push(<Drawer.Screen key="Logout" name="Logout" component={LogoutScreen} />);
+    } else {
+        drawerScreens.push(<Tab.Screen
+            key="Registration"
+            name="Registration"
+            component={RegistrationScreen}
+            options={{
+                tabBarStyle: { display: 'none' }, // Hides the tab bar button for Registration screen
+                tabBarButton: () => null, // Another way to make the tab invisible
+            }}
+        />);
+    }
 
     return (
-        <Drawer.Navigator screenOptions={{ headerShown: false }}>
-            <Drawer.Screen
-                name="Home"
-                component={BottomTabs}
-                options={{ drawerItemStyle: { display: "none" } }}
-            />
-            <Drawer.Screen name="Settings" component={SettingsScreen} />
-            {authToken && <Drawer.Screen name="Logout" component={LogoutScreen} />} 
+        <Drawer.Navigator
+            id="drawer"
+            screenOptions={{
+                drawerStyle: {
+                    backgroundColor: isDarkTheme ? darkTheme.colors.drawerBackground : lightTheme.colors.drawerBackground,
+                },
+                drawerActiveTintColor: isDarkTheme ? darkTheme.colors.primary : lightTheme.colors.primary,
+                drawerInactiveTintColor: isDarkTheme ? darkTheme.colors.text : lightTheme.colors.text,
+                headerStyle: {
+                    backgroundColor: isDarkTheme ? darkTheme.colors.drawerHeaderBackground : lightTheme.colors.drawerHeaderBackground,
+                },
+                headerTintColor: isDarkTheme ? darkTheme.colors.text : lightTheme.colors.text,
+            }}
+        >
+            {drawerScreens}
         </Drawer.Navigator>
     );
 };
 
 export default function App() {
+    const { isDarkTheme } = useDarkMode();
     return (
         <AuthProvider>
-            <ThemeProvider>
-                <NavigationContainer>
-                    <DrawerNavigator />
-                </NavigationContainer>
-            </ThemeProvider>
+            <DarkModeProvider>
+                <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+                    <NavigationContainer>
+                        <DrawerNavigator />
+                    </NavigationContainer>
+                </ThemeProvider>
+            </DarkModeProvider>
         </AuthProvider>
     );
 }
-
-const styles = StyleSheet.create({
-    toggleButton: {
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 10,
-        backgroundColor: "transparent",
-    },
-    toggleButtonText: {
-        color: "white",
-        fontWeight: "bold",
-    },
-});

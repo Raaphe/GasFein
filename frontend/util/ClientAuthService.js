@@ -8,11 +8,13 @@ export const login = async (username, password) => {
         const res = await userApi.usersLoginPost({
             email: username,
             password: password
-        })
-        console.log(request);
-    
-        await AsyncStorage.setItem("jwt_token", res.data);
-        return res.data.jwt;
+        }, async (err, data, response) => {
+            console.log(response);
+            await AsyncStorage.setItem("jwt_token", data);
+            return res.data.jwt;
+        });
+
+        return res;
     } catch (e) {
         throw e;
     }
@@ -25,11 +27,13 @@ export const signUp = async ({password, firstName, lastName, email, imageId}) =>
             email: email,
             password: password,
             profileImage: imageId
+        }, async (err, data, response) => {
+            console.log(response);
+            await AsyncStorage.setItem("jwt_token", data);
+            return res.data.jwt;
         });
-        console.log(request);
-    
-        await AsyncStorage.setItem("jwt_token", res.data);
-        return res.data.jwt;
+
+        return res;
     } catch (e) {
         throw e;
     }

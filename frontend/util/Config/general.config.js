@@ -1,6 +1,4 @@
-const dotenv = require('dotenv');
-
-dotenv.config();
+import Constants from "expo-constants"
 
 /**
  * @namespace Config Generaux
@@ -17,7 +15,7 @@ const config = {
    * Token pour s'authentifier pour le trajet
    * @type {String}
    */
-  GASFEIN_TOKEN: process.env.GASFEIN_TOKEN || "",
+  GASFEIN_TOKEN: Constants.expoConfig.extra.GASFEIN_TOKEN
 
 };
 

@@ -1,25 +1,18 @@
-import React, { useContext } from 'react';
-import { View, StyleSheet, Text } from "react-native";
-import { ThemeContext } from "../Providers/ThemeProvider";
-import { Switch } from "react-native-paper";
-
+import React from 'react';
+import {useDarkMode} from "../Providers/DarkModeProvider";
+import {IconButton, MD3Colors} from "react-native-paper";
 
 export const DarkModeToggle = () => {
-    const { isDarkTheme, setDarkTheme } = useContext(ThemeContext);
+    const { isDarkTheme, setDarkTheme } = useDarkMode();
 
     return (
-      <View style={styles.toggleContainer}>
-          <Text>{isDarkTheme ? "⚪" : "⚫"}</Text>
-          <Switch value={isDarkTheme} onChange={() => setDarkTheme(!isDarkTheme)} />
-      </View>
+
+        <IconButton
+            style={{paddingBottom: 12, paddingLeft: 10}}
+            icon={isDarkTheme ? "weather-sunny" : "moon-waning-crescent" }
+            iconColor={isDarkTheme ? MD3Colors.secondary100 : MD3Colors.primary0}
+            size={35}
+            onPress={() => setDarkTheme(!isDarkTheme)}
+        />
     );
 }
-
-const styles = StyleSheet.create({
-    toggleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 16,
-    },
-});

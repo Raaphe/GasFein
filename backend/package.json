@@ -5,9 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "build": "babel src --out-dir build && echo 'Build completed!'",
-    "start": "npm run build && node build/index.js",
+    "start": "node build/index.js",
     "clean": "rimraf build && echo 'Cleaned dist folder!'",
-    "jsdoc": "jsdoc -c jsdoc.json -r -R ../README.md ./src/ -d ../docs/jsdoc"
+    "jsdoc": "jsdoc -c jsdoc.json -r -R ../README.md ./src/ -d ../docs/jsdoc",
+    "code-gen" : "openapi-generator-cli generate -i ../docs/swagger/swagger.json -g javascript -o ../frontend/api/generated-client --skip-validate-spec"
   },
   "dependencies": {
     "axios": "^1.7.9",

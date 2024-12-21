@@ -1,14 +1,12 @@
 import { View, Text } from "react-native";
-import { useContext } from "react";
-import {AuthContext} from "../Providers/AuthProvider";
+import { useAuth } from "../Providers/AuthProvider";
 
 
 export const LogoutScreen = () => {
-    const { setIsAuth } = useContext(AuthContext);
+    const { authToken, loginUser, logoutUser, register } = useAuth();
     return (
         <View>
             <Text>Logging out...</Text>
-            {setIsAuth(false)}
         </View>
     );
 };
