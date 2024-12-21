@@ -17,7 +17,6 @@ import { DarkModeToggle } from "./Components/DarkModeToggle";
 import {createStackNavigator} from "@react-navigation/native/src/__stubs__/createStackNavigator";
 import {RegistrationScreen} from "./Pages/RegistrationScreen";
 
-// Define light and dark themes
 export const lightTheme = createTheme({
     colors: {
         background: '#ffffff',
@@ -158,8 +157,8 @@ const DrawerNavigator = () => {
             name="Registration"
             component={RegistrationScreen}
             options={{
-                tabBarStyle: { display: 'none' }, // Hides the tab bar button for Registration screen
-                tabBarButton: () => null, // Another way to make the tab invisible
+                tabBarStyle: { display: 'none' },
+                tabBarButton: () => null,
             }}
         />);
     }
