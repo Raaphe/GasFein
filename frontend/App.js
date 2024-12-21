@@ -7,6 +7,7 @@ import React from "react";
 
 import { HomeScreen } from "./Pages/HomeScreen";
 import { MapScreen } from "./Pages/MapScreen";
+import { StationDetailsScreen } from "./Pages/StationDetailsScreen";
 import { CarScreen } from "./Pages/CarScreen";
 import { LoginScreen } from "./Pages/LoginScreen";
 import { SettingsScreen } from "./Pages/SettingsScreen";
@@ -146,6 +147,7 @@ const DrawerNavigator = () => {
     const drawerScreens = [
         <Drawer.Screen key="Home" name="Home" component={BottomTabs} />,
         <Drawer.Screen key="Settings" name="Settings" component={SettingsScreen} />,
+        <Drawer.Screen name="StationDetails" component={StationDetailsScreen} />
     ];
 
 

@@ -6,7 +6,7 @@ import axios from "axios";
 import { GasApiApi } from "../api/generated-client/src";
 
 // ---- Add your Ip buddy (Juste pour le dev tqt)
-const Backend_IP = "192.168.2.45";
+const Backend_IP = "192.168.2.22";
 
 export const MapScreen = () => {
   const gasApi = new GasApiApi();
