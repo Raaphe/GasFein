@@ -8,6 +8,7 @@ import { useContext } from "react";
 
 
 import { HomeScreen } from "./Pages/HomeScreen";
+import { StationScreen } from "./Pages/StationScreen";
 import { MapScreen } from "./Pages/MapScreen";
 import { CarScreen } from "./Pages/CarScreen";
 import { LoginScreen } from "./Pages/LoginScreen";
@@ -51,10 +52,12 @@ const DrawerNavigator = () => {
                 options={{ drawerItemStyle: { display: "none" } }}
             />
             <Drawer.Screen name="Settings" component={SettingsScreen} />
+            <Drawer.Screen name="Station" component={StationScreen} />
             {authToken && <Drawer.Screen name="Logout" component={LogoutScreen} />} 
         </Drawer.Navigator>
     );
 };
+
 
 export default function App() {
     return (
