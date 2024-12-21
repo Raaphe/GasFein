@@ -29,7 +29,8 @@ export const AuthProvider = ({ children }) => {
     const register = async ({password, firstName, lastName, email, imageId}) => {
         try {
             await signUp({password, firstName, lastName, email, imageId})
-                .then(result => {
+                .then(async result => {
+                    await login(password, email);
                     return result;
                 }).catch(error => {
                     console.log(error);

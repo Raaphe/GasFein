@@ -2,8 +2,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DarkModeProvider, useDarkMode } from "./Providers/DarkModeProvider";
 import { createTheme, ThemeProvider } from "@shopify/restyle";
+import {PaperProvider} from "react-native-paper";
 import React from "react";
-
 
 import { HomeScreen } from "./Pages/HomeScreen";
 import { MapScreen } from "./Pages/MapScreen";
@@ -186,14 +186,16 @@ const DrawerNavigator = () => {
 export default function App() {
     const { isDarkTheme } = useDarkMode();
     return (
-        <AuthProvider>
-            <DarkModeProvider>
-                <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
-                    <NavigationContainer>
-                        <DrawerNavigator />
-                    </NavigationContainer>
-                </ThemeProvider>
-            </DarkModeProvider>
-        </AuthProvider>
+        <PaperProvider>
+            <AuthProvider>
+                <DarkModeProvider>
+                    <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+                        <NavigationContainer>
+                            <DrawerNavigator />
+                        </NavigationContainer>
+                    </ThemeProvider>
+                </DarkModeProvider>
+            </AuthProvider>
+        </PaperProvider>
     );
 }

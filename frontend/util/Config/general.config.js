@@ -15,7 +15,13 @@ const config = {
    * Token pour s'authentifier pour le trajet
    * @type {String}
    */
-  GASFEIN_TOKEN: Constants.expoConfig.extra.GASFEIN_TOKEN
+  GASFEIN_TOKEN: Constants.expoConfig.extra.GASFEIN_TOKEN,
+
+  /**
+   * Backend's IP.
+   * @type {String}
+   */
+  BACKEND_IP: Constants.expoConfig.extra.BACKEND_IP,
 
 };
 
