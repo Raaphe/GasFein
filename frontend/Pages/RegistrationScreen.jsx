@@ -3,8 +3,8 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, TextInput, Button } from 'react-native-paper';
 import { useDarkMode } from "../Providers/DarkModeProvider";
 import { darkTheme, lightTheme } from "../App";
-import {useNavigation} from "@react-navigation/native";
-import {useAuth} from "../Providers/AuthProvider";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../Providers/AuthProvider";
 
 export const RegistrationScreen = ({ navigation }) => {
     const [form, setForm] = useState({
@@ -34,21 +34,23 @@ export const RegistrationScreen = ({ navigation }) => {
             alert("Passwords do not match!");
             return;
         }
+
         try {
-            register({
+            const res = await register({
                 password: form.password.trim(),
-                firstName: form.firstName,
+                firstName: form.firstName.trim(),
                 lastName: form.lastName.trim(),
                 email: form.email.trim(),
                 imageId: "1",
             });
+            console.log(res);
             alert("Registration successful!");
-            nav.navigate("Login");
-        } catch (e) {
-            console.error("Registration error:", e);
+            nav.navigate("NextScreen"); // Redirect after success
+        } catch (error) {
+            console.error("Registration error:", error);
+            alert("Registration failed. Please try again.");
         }
     };
-
     const handleLoginRedirect = () => {
         nav.navigate("Login");
     };

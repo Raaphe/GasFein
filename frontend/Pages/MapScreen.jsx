@@ -4,12 +4,16 @@ import { StyleSheet, Text, View, TouchableOpacity, Linking } from "react-native"
 import MapView, { Marker, Polyline } from "react-native-maps";
 import axios from "axios";
 import { GasApiApi } from "../api/generated-client/src";
-import {ActivityIndicator} from "react-native-paper";
-import {config} from "../util/Config/general.config";
+import { ActivityIndicator } from "react-native-paper";
+import { config} from "../util/Config/general.config";
+import { useDarkMode } from "../Providers/DarkModeProvider";
+import { lightTheme, darkTheme } from "../App";
 
 export const MapScreen = () => {
   const gasApi = new GasApiApi();
 
+  const { isDarkTheme } = useDarkMode();
+  const [theme, setTheme] = useState(lightTheme);
   const [location, setLocation] = useState(null);
   const [tempGasStations, setTempGasStations] = useState([]);
   const [gasStations, setGasStations] = useState([]);
@@ -34,8 +38,6 @@ export const MapScreen = () => {
 
       if (geocode.length > 0) {
         let { city, region } = geocode[0];
-
-        console.log(`${city}, ${region}`);
 
         const provinceMapping = {
           QC: "quebec",
@@ -80,7 +82,6 @@ export const MapScreen = () => {
 
 
   const getGasStations = async () => {
-    console.log(location)
     if (location) {
       try {
         gasApi.gasPricesProvinceCityGet(location.province, location.city, (err, data, response) => {
@@ -157,6 +158,10 @@ export const MapScreen = () => {
   };
 
   useEffect(() => {
+    setTheme(isDarkTheme ? darkTheme : lightTheme);
+  }, [isDarkTheme]);
+
+  useEffect(() => {
     getUserPosition();
   }, []);
 
@@ -184,7 +189,7 @@ export const MapScreen = () => {
           {error ? (
               <Text style={styles.errorText}>{error}</Text>
           ) : (
-              <ActivityIndicator animating={true} />
+              <ActivityIndicator theme={theme.colors.text} size="large" animating={true} />
           )}
         </View>
     );
@@ -193,6 +198,9 @@ export const MapScreen = () => {
   return (
       <View style={styles.container}>
         <MapView
+            userInterfaceStyle={isDarkTheme ? "dark" : "light"}
+            loadingBackgroundColor={theme.colors.background}
+            tintColor={theme.colors.text}
             style={styles.map}
             initialRegion={{
               latitude: location.latitude,

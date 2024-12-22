@@ -54,7 +54,7 @@ const Dropdown = ({ label, data, onSelect, selectedValue }) => {
     );
 };
 
-export const HomeScreen = ({ navigation }) => {
+export const Gas = ({ navigation }) => {
     const [province, setProvince] = useState(null);
     const [city, setCity] = useState(null);
     const [stations, setStations] = useState([]);
@@ -67,7 +67,6 @@ export const HomeScreen = ({ navigation }) => {
 
     const fetchStations = async () => {
         try {
-            //------------------------ Must add your Backend ip -------------------
             const res = await axios.get(`${config.BACKEND_IP}/api/gas-prices/${province}/${city}`);
             setStations(res.data);
         } catch (err) {

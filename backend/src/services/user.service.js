@@ -48,6 +48,7 @@ class UserService {
      * @returns {Promise<User|null>} - L'utilisateur trouvé avec ses voitures et stations, ou null si l'utilisateur n'existe pas ou si le mot de passe est incorrect.
      */
     fetchUserByEmailAndPassword = async (email, password) => {
+        console.log(email, password);
         const user = await this.userRepository.findOne({
             where: { email },
             relations: ['cars', 'stations'],
@@ -84,6 +85,7 @@ class UserService {
      */
     createUser = async (firstName, lastName, email, password, profileImage) => {
         try {
+            console.log("creating user =====")
             const newUser = this.userRepository.create({
                 first_name: firstName,
                 last_name: lastName,

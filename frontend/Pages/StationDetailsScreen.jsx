@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView } from "react-native";
 
 export const StationDetailsScreen = ({ route, navigation }) => {

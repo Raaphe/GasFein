@@ -5,18 +5,19 @@ import { createTheme, ThemeProvider } from "@shopify/restyle";
 import {PaperProvider} from "react-native-paper";
 import React from "react";
 
-import { HomeScreen } from "./Pages/HomeScreen";
+import { Gas } from "./Pages/Gas";
 import { MapScreen } from "./Pages/MapScreen";
 import { StationDetailsScreen } from "./Pages/StationDetailsScreen";
 import { CarScreen } from "./Pages/CarScreen";
 import { LoginScreen } from "./Pages/LoginScreen";
 import { SettingsScreen } from "./Pages/SettingsScreen";
 import { AuthProvider, useAuth } from "./Providers/AuthProvider";
-import { LogoutScreen } from "./Pages/LogoutScreen";
+import { LogoutButton } from "./Components/LogoutButton";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DarkModeToggle } from "./Components/DarkModeToggle";
 import {createStackNavigator} from "@react-navigation/native/src/__stubs__/createStackNavigator";
 import {RegistrationScreen} from "./Pages/RegistrationScreen";
+import {AddCarScreen} from "./Pages/AddCarScreen";
 
 export const lightTheme = createTheme({
     colors: {
@@ -89,7 +90,7 @@ const BottomTabs = () => {
     const tabScreens = [
         <Tab.Screen key="Map" name="Map" component={MapScreen} />,
         <Tab.Screen key="Car" name="Car" component={CarScreen} />,
-        <Tab.Screen key="HomeScreen" name="Home" component={HomeScreen} />,
+        <Tab.Screen key="Gas" name="Gas" component={Gas} />,
     ];
 
     if (!authToken) {
@@ -139,36 +140,54 @@ const BottomTabs = () => {
 };
 
 
-// Drawer Navigator with dynamic styles
 const DrawerNavigator = () => {
     const { authToken } = useAuth();
-    const { isDarkTheme } = useDarkMode();
+    const { isDarkTheme, toggleDarkMode } = useDarkMode(); // Add toggleDarkMode function
 
     const drawerScreens = [
         <Drawer.Screen key="Home" name="Home" component={BottomTabs} />,
         <Drawer.Screen key="Settings" name="Settings" component={SettingsScreen} />,
-        <Drawer.Screen name="StationDetails" component={StationDetailsScreen} />
+        <Drawer.Screen key="StationDetails" name="StationDetails" component={StationDetailsScreen}  options={{title: "Station Details", headerTitle: "Station Details"}}/>
     ];
 
-
     if (authToken) {
-        drawerScreens.push(<Drawer.Screen key="Logout" name="Logout" component={LogoutScreen} />);
+        drawerScreens.push(
+            <Drawer.Screen
+                key="Logout"
+                name="Logout"
+                component={LogoutButton}
+                options={{
+                    drawerItemStyle: {
+                        backgroundColor: isDarkTheme
+                            ? darkTheme.colors.drawerBackground
+                            : lightTheme.colors.drawerBackground,
+                    },
+            }}/>
+        );
+        drawerScreens.push(
+            <Drawer.Screen
+                key="AddCarScreen"
+                name="AddCarScreen"
+                component={AddCarScreen}
+                options={{title: "Add Car", headerTitle: "Add Car"}}
+            />
+        );
     } else {
-        drawerScreens.push(<Tab.Screen
-            key="Registration"
-            name="Registration"
-            component={RegistrationScreen}
-            options={{
-                tabBarStyle: { display: 'none' },
-                tabBarButton: () => null,
-            }}
-        />);
+        drawerScreens.push(
+            <Drawer.Screen
+                key="Registration"
+                name="Registration"
+                component={RegistrationScreen}
+            />
+        );
+
     }
 
     return (
         <Drawer.Navigator
             id="drawer"
             screenOptions={{
+                headerTransparent: true,
                 drawerStyle: {
                     backgroundColor: isDarkTheme ? darkTheme.colors.drawerBackground : lightTheme.colors.drawerBackground,
                 },

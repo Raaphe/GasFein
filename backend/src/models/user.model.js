@@ -13,7 +13,7 @@ class User {
     @Column({ type: 'varchar', length: 100 })
     last_name;
 
-    @Column({ type: 'varchar', length: 100, unique: true })
+    @Column({ type: 'varchar', length: 200, unique: true })
     email;
 
     @Column({ type: 'varchar', length: 255 })
