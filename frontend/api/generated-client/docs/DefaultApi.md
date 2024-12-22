@@ -1,6 +1,6 @@
 # GasFeinApi.DefaultApi
 
-All URIs are relative to *http://10.0.0.37:3005/api/v1*
+All URIs are relative to *http://192.168.2.22:3005/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

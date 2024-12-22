@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "http://10.0.0.37:3005/api/v1",
+      "url": "http://192.168.2.22:3005/api/v1",
       "description": "Development server (HTTP)"
     }
   ],

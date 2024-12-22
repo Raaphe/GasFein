@@ -18,6 +18,7 @@ import { DarkModeToggle } from "./Components/DarkModeToggle";
 import {createStackNavigator} from "@react-navigation/native/src/__stubs__/createStackNavigator";
 import {RegistrationScreen} from "./Pages/RegistrationScreen";
 import {AddCarScreen} from "./Pages/AddCarScreen";
+import {GasStationsProvider} from "./Providers/GasStationProvider";
 
 export const lightTheme = createTheme({
     colors: {
@@ -90,7 +91,7 @@ const BottomTabs = () => {
     const tabScreens = [
         <Tab.Screen key="Map" name="Map" component={MapScreen} />,
         <Tab.Screen key="Car" name="Car" component={CarScreen} />,
-        <Tab.Screen key="Gas" name="Gas" component={Gas} />,
+        <Tab.Screen key="HomeScreen" name="Home" component={HomeScreen} />,
     ];
 
     if (!authToken) {
@@ -209,13 +210,15 @@ export default function App() {
     return (
         <PaperProvider>
             <AuthProvider>
-                <DarkModeProvider>
-                    <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
-                        <NavigationContainer>
-                            <DrawerNavigator />
-                        </NavigationContainer>
-                    </ThemeProvider>
-                </DarkModeProvider>
+                <GasStationsProvider>
+                    <DarkModeProvider>
+                        <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+                            <NavigationContainer>
+                                <DrawerNavigator />
+                            </NavigationContainer>
+                        </ThemeProvider>
+                    </DarkModeProvider>
+                </GasStationsProvider>
             </AuthProvider>
         </PaperProvider>
     );
