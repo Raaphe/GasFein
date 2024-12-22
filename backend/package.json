@@ -8,7 +8,7 @@
     "start": "node build/index.js",
     "clean": "rimraf build && echo 'Cleaned dist folder!'",
     "jsdoc": "jsdoc -c jsdoc.json -r -R ../README.md ./src/ -d ../docs/jsdoc",
-    "code-gen" : "openapi-generator-cli generate -i ../docs/swagger/swagger.json -g javascript -o ../frontend/api/generated-client --skip-validate-spec"
+    "code-gen": "openapi-generator-cli generate -i ../docs/swagger/swagger.json -g javascript -o ../frontend/api/generated-client --skip-validate-spec"
   },
   "dependencies": {
     "axios": "^1.7.9",
@@ -36,7 +36,7 @@
     "@types/node": "^22.9.4",
     "jsdoc": "^4.0.4",
     "jsdoc-to-markdown": "^9.0.5",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.1.9",
     "rimraf": "^3.0.2"
   }
 }

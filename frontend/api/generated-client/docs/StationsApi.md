@@ -1,6 +1,6 @@
 # GasFeinApi.StationsApi
 
-All URIs are relative to *http://localhost:3000/api*
+All URIs are relative to *http://10.0.0.37:3005/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

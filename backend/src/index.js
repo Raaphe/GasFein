@@ -5,7 +5,7 @@ const express = require('express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { swaggerOptions } = require('./configs/swagger.config.js');
-const {generateSwaggerFile} = require("./utils/file.util");
+const { generateSwaggerFile } = require("./utils/file.util");
 require('reflect-metadata');
 
 const userRoutes = require('./routes/user.route.js');
@@ -26,13 +26,13 @@ connectToDataSource()
     .then(() => {
         console.log("\n\nData Source has been initialized!");
 
-        app.use('/api', userRoutes);
-        app.use('/api', gasApiRoutes);
-        app.use('/api', mapRoutes);
+        app.use(`${config.BASE_PATH}`, userRoutes);
+        app.use(`${config.BASE_PATH}`, gasApiRoutes);
+        app.use(`${config.BASE_PATH}`, mapRoutes);
         console.log(config.PORT);
         app.listen(Number(config.PORT), "0.0.0.0", async () => {
             if (config.ENV === 'development') {
-                console.log(`Server is running on http://localhost:${config.PORT}`);
+                console.log(`Server is running on http://${config.PRIVATE_LOCAL_IP}:${config.PORT}`);
             } else if (config.ENV === 'production') {
                 console.log(`Server is running on https://gasfein.onrender.com`);
             }

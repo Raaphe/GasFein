@@ -4,9 +4,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Linking } from "react-native"
 import MapView, { Marker, Polyline } from "react-native-maps";
 import axios from "axios";
 import { GasApiApi } from "../api/generated-client/src";
-
-// ---- Add your Ip buddy (Juste pour le dev tqt)
-const Backend_IP = "192.168.2.22";
+import {ActivityIndicator} from "react-native-paper";
+import {config} from "../util/Config/general.config";
 
 export const MapScreen = () => {
   const gasApi = new GasApiApi();
@@ -36,6 +35,24 @@ export const MapScreen = () => {
       if (geocode.length > 0) {
         let { city, region } = geocode[0];
 
+        console.log(`${city}, ${region}`);
+
+        const provinceMapping = {
+          QC: "quebec",
+          ON: "ontario",
+          BC: "british columbia",
+          AB: "alberta",
+          MB: "manitoba",
+          SK: "saskatchewan",
+          NB: "new brunswick",
+          NS: "nova scotia",
+          PE: "prince edward island",
+          NL: "newfoundland and labrador",
+          NT: "northwest territories",
+          NU: "nunavut",
+          YT: "yukon",
+        };
+
         const removeAccents = (str) => {
           return str
               .normalize("NFD")
@@ -43,9 +60,13 @@ export const MapScreen = () => {
               .toLowerCase();
         };
 
+        const provinceName = provinceMapping[region]
+            ? provinceMapping[region]
+            : removeAccents(region); // Fallback if not in mapping
+
         setLocation({
           city: removeAccents(city),
-          province: removeAccents(region),
+          province: provinceName,
           latitude: userLocation.coords.latitude,
           longitude: userLocation.coords.longitude,
         });
@@ -57,7 +78,9 @@ export const MapScreen = () => {
     }
   };
 
+
   const getGasStations = async () => {
+    console.log(location)
     if (location) {
       try {
         gasApi.gasPricesProvinceCityGet(location.province, location.city, (err, data, response) => {
@@ -100,7 +123,7 @@ export const MapScreen = () => {
     try {
       if (destination) {
         const res = await axios.post(
-            `http://${Backend_IP}:3000/api/directions/coordinates`,
+            `${config.BACKEND_IP}/api/directions/coordinates`,
             [location, destination]
         );
         setRouteCoordinates(res.data);
@@ -161,7 +184,7 @@ export const MapScreen = () => {
           {error ? (
               <Text style={styles.errorText}>{error}</Text>
           ) : (
-              <Text style={styles.loadingText}>Loading...</Text>
+              <ActivityIndicator animating={true} />
           )}
         </View>
     );

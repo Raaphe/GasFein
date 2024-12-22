@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import {config} from "../util/Config/general.config";
 
 const provinces = [
     { label: "Ontario", value: "Ontario" },
@@ -17,8 +18,6 @@ const citiesByProvince = {
     Alberta: ["Calgary", "Edmonton", "Red Deer"],
 };
 
-// ---- Add your Ip buddy (Juste pour le dev tqt)
-const Backend_IP = "192.168.2.22"
 const Dropdown = ({ label, data, onSelect, selectedValue }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -69,7 +68,7 @@ export const HomeScreen = ({ navigation }) => {
     const fetchStations = async () => {
         try {
             //------------------------ Must add your Backend ip -------------------
-            const res = await axios.get(`http://${Backend_IP}:3000/api/gas-prices/${province}/${city}`);
+            const res = await axios.get(`${config.BACKEND_IP}/api/gas-prices/${province}/${city}`);
             setStations(res.data);
         } catch (err) {
             console.error(err);

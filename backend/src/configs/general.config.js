@@ -33,7 +33,14 @@ const config = {
    * Défini par la variable d'environnement `BASE_PATH`, sinon '/api/v1' par défaut.
    * @type {string}
    */
-  BASE_PATH: process.env.BASE_PATH || '/api/v1',
+  BASE_PATH: process.env.BASE_PATH || 'api/v1',
+
+  /**
+   * Local Private IP that react native will point to.
+   * @type {string}
+   */
+  PRIVATE_LOCAL_IP: process.env.PRIVATE_LOCAL_IP || 'localhost',
+
 
   /**
    * Hôte de la base de données.
