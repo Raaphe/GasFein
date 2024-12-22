@@ -32,11 +32,11 @@ class ApiClient {
      * Overrides the default value set in spec file if present
      * @param {String} basePath
      */
-    constructor(basePath = 'http://10.0.0.37:3005/api/v1') {
+    constructor(basePath = 'http://192.168.2.22:3005/api/v1') {
         /**
          * The base URL against which to resolve every API call's (relative) path.
          * @type {String}
-         * @default http://10.0.0.37:3005/api/v1
+         * @default http://192.168.2.22:3005/api/v1
          */
         this.basePath = basePath.replace(/\/+$/, '');
 
@@ -595,7 +595,7 @@ class ApiClient {
     hostSettings() {
         return [
             {
-              'url': "http://10.0.0.37:3005/api/v1",
+              'url': "http://192.168.2.22:3005/api/v1",
               'description': "Development server (HTTP)",
             }
       ];

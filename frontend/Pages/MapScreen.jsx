@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import * as Location from "expo-location";
 import { StyleSheet, Text, View, TouchableOpacity, Linking } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import axios from "axios";
 import { GasApiApi } from "../api/generated-client/src";
-import {ActivityIndicator} from "react-native-paper";
-import {config} from "../util/Config/general.config";
+import { ActivityIndicator } from "react-native-paper";
+import { GasStationsContext } from "../Providers/GasStationProvider";
+import { config } from "../util/Config/general.config";
 
 export const MapScreen = () => {
   const gasApi = new GasApiApi();
@@ -17,6 +18,9 @@ export const MapScreen = () => {
   const [destination, setDestination] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { setnearByStations, nearByStations } = useContext(GasStationsContext);
+
 
   const getUserPosition = async () => {
     try {
@@ -55,14 +59,14 @@ export const MapScreen = () => {
 
         const removeAccents = (str) => {
           return str
-              .normalize("NFD")
-              .replace(/[\u0300-\u036f]/g, "")
-              .toLowerCase();
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
         };
 
         const provinceName = provinceMapping[region]
-            ? provinceMapping[region]
-            : removeAccents(region); // Fallback if not in mapping
+          ? provinceMapping[region]
+          : removeAccents(region);
 
         setLocation({
           city: removeAccents(city),
@@ -123,8 +127,8 @@ export const MapScreen = () => {
     try {
       if (destination) {
         const res = await axios.post(
-            `${config.BACKEND_IP}/api/directions/coordinates`,
-            [location, destination]
+          `${config.BACKEND_IP}/api/v1/directions/coordinates`,
+          [location, destination]
         );
         setRouteCoordinates(res.data);
       }
@@ -147,8 +151,8 @@ export const MapScreen = () => {
     if (destination) {
       const { latitude, longitude } = destination;
       Linking.openURL(
-          `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`).
-      catch((err) => console.error("Error opening Google Maps:", err));
+        `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`).
+        catch((err) => console.error("Error opening Google Maps:", err));
     }
   };
 
@@ -178,78 +182,84 @@ export const MapScreen = () => {
     }
   }, [destination]);
 
+  useEffect(() => {
+    if (gasStations.length > 0) {
+      setnearByStations(gasStations);
+    }
+  }, [gasStations]);  
+
   if (isLoading || !location || gasStations.length === 0) {
     return (
-        <View style={styles.loadingContainer}>
-          {error ? (
-              <Text style={styles.errorText}>{error}</Text>
-          ) : (
-              <ActivityIndicator animating={true} />
-          )}
-        </View>
+      <View style={styles.loadingContainer}>
+        {error ? (
+          <Text style={styles.errorText}>{error}</Text>
+        ) : (
+          <ActivityIndicator animating={true} />
+        )}
+      </View>
     );
   }
 
   return (
-      <View style={styles.container}>
-        <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            showsUserLocation={true}
-        >
-
-          {destination && (
-              <Marker
-                  coordinate={destination}
-                  title="Destination"
-              />
-          )}
-
-          {routeCoordinates.length > 0 && (
-              <Polyline
-                  coordinates={routeCoordinates.map((coord) => ({
-                    latitude: coord[1],
-                    longitude: coord[0],
-                  }))}
-                  strokeColor="red"
-                  strokeWidth={3}
-              />
-          )}
-
-          {gasStations.map((station, index) =>
-              station.coordinates ? (
-                  <Marker
-                      key={index}
-                      coordinate={station.coordinates}
-                      title={station.station_name || "Gas Station"}
-                      description={station.address}
-                      onPress={() => handleGasStationPress(station)}
-                  />
-              ) : null
-          )}
-        </MapView>
+    <View style={styles.container}>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        showsUserLocation={true}
+      >
 
         {destination && (
-            <View style={styles.card}>
-              <Text style={styles.cardTitle}>{destination.station_name}</Text>
-              <Text style={styles.cardText}>Address: {destination.address}</Text>
-              {destination.price && <Text style={styles.cardText}>Price: ${destination.price}</Text>}
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cardButton} onPress={openGoogleMaps}>
-                  <Text style={styles.cardButtonText}>Get Directions</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cardButton} onPress={viewDetails}>
-                  <Text style={styles.cardButtonText}>View Details</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+          <Marker
+            coordinate={destination}
+            title="Destination"
+          />
         )}
-      </View>
+
+        {routeCoordinates.length > 0 && (
+          <Polyline
+            coordinates={routeCoordinates.map((coord) => ({
+              latitude: coord[1],
+              longitude: coord[0],
+            }))}
+            strokeColor="red"
+            strokeWidth={3}
+          />
+        )}
+
+        {gasStations.map((station, index) =>
+          station.coordinates ? (
+            <Marker
+              key={index}
+              coordinate={station.coordinates}
+              title={station.station_name || "Gas Station"}
+              description={station.address}
+              onPress={() => handleGasStationPress(station)}
+            />
+          ) : null
+        )}
+      </MapView>
+
+      {destination && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{destination.station_name}</Text>
+          <Text style={styles.cardText}>Address: {destination.address}</Text>
+          {destination.price && <Text style={styles.cardText}>Price: ${destination.price}</Text>}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.cardButton} onPress={openGoogleMaps}>
+              <Text style={styles.cardButtonText}>Get Directions</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cardButton} onPress={viewDetails}>
+              <Text style={styles.cardButtonText}>View Details</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </View>
   );
 };
 

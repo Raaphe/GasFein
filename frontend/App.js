@@ -12,6 +12,7 @@ import { CarScreen } from "./Pages/CarScreen";
 import { LoginScreen } from "./Pages/LoginScreen";
 import { SettingsScreen } from "./Pages/SettingsScreen";
 import { AuthProvider, useAuth } from "./Providers/AuthProvider";
+import { GasStationsProvider } from "./Providers/GasStationProvider";
 import { LogoutScreen } from "./Pages/LogoutScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DarkModeToggle } from "./Components/DarkModeToggle";
@@ -190,13 +191,15 @@ export default function App() {
     return (
         <PaperProvider>
             <AuthProvider>
-                <DarkModeProvider>
-                    <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
-                        <NavigationContainer>
-                            <DrawerNavigator />
-                        </NavigationContainer>
-                    </ThemeProvider>
-                </DarkModeProvider>
+                <GasStationsProvider>
+                    <DarkModeProvider>
+                        <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+                            <NavigationContainer>
+                                <DrawerNavigator />
+                            </NavigationContainer>
+                        </ThemeProvider>
+                    </DarkModeProvider>
+                </GasStationsProvider>
             </AuthProvider>
         </PaperProvider>
     );

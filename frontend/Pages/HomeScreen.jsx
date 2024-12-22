@@ -1,8 +1,10 @@
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
+import { config } from "../util/Config/general.config";
+import { GasStationsContext } from "../Providers/GasStationProvider";
+import Dropdown from "../Components/Dropdown";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView } from "react-native";
-import { useNavigation } from '@react-navigation/native';
-import {config} from "../util/Config/general.config";
 
 const provinces = [
     { label: "Ontario", value: "Ontario" },
@@ -18,47 +20,13 @@ const citiesByProvince = {
     Alberta: ["Calgary", "Edmonton", "Red Deer"],
 };
 
-const Dropdown = ({ label, data, onSelect, selectedValue }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-        <View style={styles.dropdownContainer}>
-            <TouchableOpacity
-                style={styles.dropdownButton}
-                onPress={() => setIsOpen(!isOpen)}
-            >
-                <Text style={styles.dropdownButtonText}>
-                    {selectedValue || `Select ${label}`}
-                </Text>
-            </TouchableOpacity>
-            {isOpen && (
-                <View style={styles.dropdownList}>
-                    <FlatList
-                        data={data}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity
-                                style={styles.dropdownItem}
-                                onPress={() => {
-                                    onSelect(item);
-                                    setIsOpen(false);
-                                }}
-                            >
-                                <Text style={styles.dropdownItemText}>{item}</Text>
-                            </TouchableOpacity>
-                        )}
-                    />
-                </View>
-            )}
-        </View>
-    );
-};
-
 export const HomeScreen = ({ navigation }) => {
     const [province, setProvince] = useState(null);
     const [city, setCity] = useState(null);
     const [stations, setStations] = useState([]);
-
+    const { nearByStations } = useContext(GasStationsContext);
+    const [otherPlace, setOtherPlace] = useState(false);
+    const [text, setText] = useState("Nearby Gas Stations");
 
     const handleProvinceSelect = (selectedProvince) => {
         setProvince(selectedProvince);
@@ -67,41 +35,57 @@ export const HomeScreen = ({ navigation }) => {
 
     const fetchStations = async () => {
         try {
-            //------------------------ Must add your Backend ip -------------------
-            const res = await axios.get(`${config.BACKEND_IP}/api/gas-prices/${province}/${city}`);
+            const res = await axios.get(`${config.BACKEND_IP}/api/v1/gas-prices/${province}/${city}`);
             setStations(res.data);
         } catch (err) {
             console.error(err);
         }
     };
-
+   
+    useFocusEffect(
+        React.useCallback(() => {
+            setStations(nearByStations);
+        }, [otherPlace])
+      );
     useEffect(() => {
         fetchStations();
     }, [city]);
 
     const handleStationClick = (station) => {
-        console.log('Station:', station);
         navigation.navigate("StationDetails", { station })
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Choose Your Location</Text>
+            <Text style={styles.title}>{text}</Text>
 
-            <Dropdown
-                label="Province"
-                data={provinces.map((prov) => prov.label)}
-                onSelect={handleProvinceSelect}
-                selectedValue={province}
-            />
+            <TouchableOpacity
+                style={styles.toggleButton}
+                onPress={() => setOtherPlace(!otherPlace)}
+            >
+                <Text style={styles.toggleButtonText}>
+                    {otherPlace ? "Hide Other Places" : "Show Other Places"}
+                </Text>
+            </TouchableOpacity>
 
-            {province && (
-                <Dropdown
-                    label="City"
-                    data={citiesByProvince[province] || []}
-                    onSelect={setCity}
-                    selectedValue={city}
-                />
+            {otherPlace && (
+                <>
+                    <Dropdown
+                        label="Province"
+                        data={provinces.map((prov) => prov.label)}
+                        onSelect={handleProvinceSelect}
+                        selectedValue={province}
+                    />
+
+                    {province && (
+                        <Dropdown
+                            label="City"
+                            data={citiesByProvince[province] || []}
+                            onSelect={setCity}
+                            selectedValue={city}
+                        />
+                    )}
+                </>
             )}
 
             <ScrollView style={styles.scrollView}>
@@ -146,40 +130,18 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginTop: 20,
     },
-    dropdownContainer: {
-        marginBottom: 15,
+    toggleButton: {
+        backgroundColor: "#007BFF",
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 20,
+        alignItems: "center",
     },
-    dropdownButton: {
-        padding: 15,
-        backgroundColor: "#ffffff",
-        borderWidth: 1,
-        borderColor: "#ddd",
-        borderRadius: 8,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    dropdownButtonText: {
+    toggleButtonText: {
         fontSize: 16,
-        color: "#333",
-    },
-    dropdownList: {
-        backgroundColor: "#ffffff",
-        borderWidth: 1,
-        borderColor: "#ddd",
-        borderRadius: 8,
-        marginTop: 5,
-        maxHeight: 150,
-    },
-    dropdownItem: {
-        padding: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: "#eee",
-    },
-    dropdownItemText: {
-        fontSize: 16,
-        color: "#333",
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
     },
     scrollView: {
         marginTop: 20,
@@ -207,11 +169,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
         color: "#333",
-        marginBottom: 5,
-    },
-    stationAddress: {
-        fontSize: 14,
-        color: "#555",
         marginBottom: 5,
     },
     stationPrice: {
