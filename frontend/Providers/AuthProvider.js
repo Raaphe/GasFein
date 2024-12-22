@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const result = await signUp({ password, firstName, lastName, email, imageId });
             if (result.status === 201) {
-                setAuthToken(result.body.jwt); // Store token
+                setAuthToken(result.body.jwt);
                 return result;
             }
             throw new Error("Failed to create user.");

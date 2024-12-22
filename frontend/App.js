@@ -91,7 +91,7 @@ const BottomTabs = () => {
     const tabScreens = [
         <Tab.Screen key="Map" name="Map" component={MapScreen} />,
         <Tab.Screen key="Car" name="Car" component={CarScreen} />,
-        <Tab.Screen key="HomeScreen" name="Home" component={HomeScreen} />,
+        // <Tab.Screen key="HomeScreen" name="Home" component={HomeScreen} />,
     ];
 
     if (!authToken) {
