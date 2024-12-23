@@ -2,10 +2,11 @@ import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 import { GasStationsContext } from "../Providers/GasStationProvider";
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Modal, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Modal } from "react-native";
 import { config } from "../util/Config/general.config";
 import Dropdown from "../Components/Dropdown";
 import { Warning } from "../Components/Warning";
+import { GasApiApi } from "../api/generated-client/src";
 
 const provinces = [
     { label: "Ontario", value: "Ontario" },
@@ -22,6 +23,7 @@ const citiesByProvince = {
 };
 
 export const StationsScreen = ({ navigation }) => {
+    const gasApi = new GasApiApi();
     const [province, setProvince] = useState(null);
     const [city, setCity] = useState(null);
     const [stations, setStations] = useState([]);
@@ -30,7 +32,7 @@ export const StationsScreen = ({ navigation }) => {
     const [text, setText] = useState("Nearby Gas Stations");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalWarning, setModalWarning] = useState(false);
-    const [sortOptionName, setSortOptionName] = useState('desc');
+    const [sortOption, setSortOption] = useState({ type: 'name', order: 'desc' });
 
     const handleProvinceSelect = (selectedProvince) => {
         setProvince(selectedProvince);
@@ -39,8 +41,11 @@ export const StationsScreen = ({ navigation }) => {
 
     const fetchStations = async () => {
         try {
-            const res = await axios.get(`${config.BACKEND_IP}/api/v1/gas-prices/${province}/${city}`);
-            setStations(res.data);
+            gasApi.gasPricesProvinceCityGet(province, city, (err, data, response) => {
+                if (response) {
+                    setStations(response.body);
+                }
+            });
         } catch (err) {
             console.error(err);
         }
@@ -60,18 +65,22 @@ export const StationsScreen = ({ navigation }) => {
         navigation.navigate("StationDetails", { station });
     };
 
-    const handleOtherPlace = () => { 
+    const handleOtherPlace = () => {
         setModalWarning(true);
-        setOtherPlace(!otherPlace)
-    } 
+        setOtherPlace(!otherPlace);
+    };
 
     const filterStations = () => {
         let filtered = [...stations];
-        filtered.sort((a, b) =>
-            sortOptionName === "asc"
-                ? a.station_name.localeCompare(b.station_name)
-                : b.station_name.localeCompare(a.station_name)
-        );
+        filtered.sort((a, b) => {
+            if (sortOption.type === 'name') {
+                return sortOption.order === 'asc'
+                    ? a.station_name.localeCompare(b.station_name)
+                    : b.station_name.localeCompare(a.station_name);
+            } else if (sortOption.type === 'price') {
+                return sortOption.order === 'asc' ? a.price - b.price : b.price - a.price;
+            }
+        });
         return filtered;
     };
 
@@ -123,7 +132,6 @@ export const StationsScreen = ({ navigation }) => {
                 </>
             )}
 
-
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -137,9 +145,15 @@ export const StationsScreen = ({ navigation }) => {
                         <View style={styles.filterOptions}>
                             <TouchableOpacity
                                 style={styles.filterOption}
-                                onPress={() => setSortOptionName(sortOptionName == 'desc' ? 'asc' : 'desc')}
+                                onPress={() => setSortOption({ type: 'name', order: sortOption.order === 'desc' ? 'asc' : 'desc' })}
                             >
-                                <Text style={styles.filterOptionText}>{`Filter by Name (${sortOptionName == 'desc' ? 'asc' : 'desc'})`}</Text>
+                                <Text style={styles.filterOptionText}>{`Sort by Name (${sortOption.order === 'desc' ? 'asc' : 'desc'})`}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.filterOption}
+                                onPress={() => setSortOption({ type: 'price', order: sortOption.order === 'desc' ? 'asc' : 'desc' })}
+                            >
+                                <Text style={styles.filterOptionText}>{`Sort by Price (${sortOption.order === 'desc' ? 'asc' : 'desc'})`}</Text>
                             </TouchableOpacity>
                         </View>
 

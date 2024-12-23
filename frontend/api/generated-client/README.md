@@ -122,7 +122,7 @@ api.usersUserIdCarsCarIdDelete(userId, carId, callback);
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://192.168.2.22:3005/api/v1*
+All URIs are relative to *http://192.168.2.15:3005/api/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

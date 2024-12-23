@@ -220,6 +220,8 @@ export const MapScreen = ({ route, navigation }) => {
     if (location) {
       getGasStations();
     }
+
+    console.log(gasStations);
   }, [location]);
 
   useEffect(() => {
