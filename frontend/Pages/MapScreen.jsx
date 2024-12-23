@@ -200,7 +200,6 @@ export const MapScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     if (station && station.coordinates && focusRef.current) {
-      console.log(station.coordinates);
       focusOnStation(station.coordinates);
     } else {
       console.log("Station or focusRef not found");
