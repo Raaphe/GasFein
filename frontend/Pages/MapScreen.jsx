@@ -1,6 +1,6 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import * as Location from "expo-location";
-import { StyleSheet, Text, View, TouchableOpacity, Linking } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Linking, Animated } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import axios from "axios";
 import { GasApiApi } from "../api/generated-client/src";
@@ -10,7 +10,9 @@ import { lightTheme, darkTheme } from "../App";
 import { GasStationsContext } from "../Providers/GasStationProvider";
 import { config } from "../util/Config/general.config";
 
-export const MapScreen = () => {
+export const MapScreen = ({ route, navigation }) => {
+  const { station } = route.params || {};
+
   const gasApi = new GasApiApi();
 
   const { isDarkTheme } = useDarkMode();
@@ -23,8 +25,26 @@ export const MapScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { setnearByStations, nearByStations } = useContext(GasStationsContext);
+  const { setnearByStations } = useContext(GasStationsContext);
 
+  const [cardY] = useState(new Animated.Value(100));
+  const focusRef = useRef(null);
+
+  const slideInCard = () => {
+    Animated.timing(cardY, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideOutCard = () => {
+    Animated.timing(cardY, {
+      toValue: 100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const getUserPosition = async () => {
     try {
@@ -84,7 +104,6 @@ export const MapScreen = () => {
     }
   };
 
-
   const getGasStations = async () => {
     if (location) {
       try {
@@ -119,7 +138,7 @@ export const MapScreen = () => {
     });
 
     await Promise.all(geocodePromises);
-
+    console.log(station)
     setGasStations(tempListStations);
     setIsLoading(false);
   };
@@ -143,6 +162,8 @@ export const MapScreen = () => {
       latitude: station.coordinates.latitude,
       longitude: station.coordinates.longitude,
       address: station.address,
+      image: station.image,
+      lastUpdate: station.last_update,
       station_name: station.station_name,
       price: station.price,
     });
@@ -158,8 +179,33 @@ export const MapScreen = () => {
   };
 
   const viewDetails = () => {
-    console.log("View Details pressed");
+    navigation.navigate("StationDetails", { station: destination })
   };
+
+  const focusOnStation = (coordinate) => {
+    if (focusRef.current && coordinate) {
+      focusRef.current.animateCamera(
+        {
+          center: coordinate,
+          zoom: 15,
+          heading: 0,
+          pitch: 45,
+        },
+        { duration: 1000 }
+      );
+    } else {
+      console.log("The coodinates from station details were not found");
+    }
+  };
+
+  useEffect(() => {
+    if (station && station.coordinates && focusRef.current) {
+      focusOnStation(station.coordinates);
+    } else {
+      console.log("Station or focusRef not found");
+    }
+  });
+
 
   useEffect(() => {
     setTheme(isDarkTheme ? darkTheme : lightTheme);
@@ -173,6 +219,8 @@ export const MapScreen = () => {
     if (location) {
       getGasStations();
     }
+
+    console.log(gasStations);
   }, [location]);
 
   useEffect(() => {
@@ -188,26 +236,36 @@ export const MapScreen = () => {
   }, [destination]);
 
   useEffect(() => {
+    if (destination) {
+      slideInCard();
+    } else {
+      slideOutCard();
+    }
+  }, [destination]);
+
+  useEffect(() => {
     if (gasStations.length > 0) {
       setnearByStations(gasStations);
     }
   }, [gasStations]);
 
+
   if (isLoading || !location || gasStations.length === 0) {
     return (
-        <View style={styles.loadingContainer}>
-          {error ? (
-              <Text style={styles.errorText}>{error}</Text>
-          ) : (
-              <ActivityIndicator theme={theme.colors.text} size="large" animating={true} />
-          )}
-        </View>
+      <View style={styles.loadingContainer}>
+        {error ? (
+          <Text style={styles.errorText}>{error}</Text>
+        ) : (
+          <ActivityIndicator theme={theme.colors.text} size="large" animating={true} />
+        )}
+      </View>
     );
   }
 
   return (
     <View style={styles.container}>
       <MapView
+        ref={focusRef}
         style={styles.map}
         initialRegion={{
           latitude: location.latitude,
@@ -249,21 +307,38 @@ export const MapScreen = () => {
         )}
       </MapView>
 
-      {destination && (
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{destination.station_name}</Text>
-          <Text style={styles.cardText}>Address: {destination.address}</Text>
-          {destination.price && <Text style={styles.cardText}>Price: ${destination.price}</Text>}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.cardButton} onPress={openGoogleMaps}>
-              <Text style={styles.cardButtonText}>Get Directions</Text>
+      <Animated.View
+        style={[
+          styles.card,
+          {
+            transform: [{ translateY: cardY }],
+          },
+        ]}
+      >
+        {destination && (
+          <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setDestination(null)}
+            >
+              <Text style={styles.closeButtonText}>X</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardButton} onPress={viewDetails}>
-              <Text style={styles.cardButtonText}>View Details</Text>
-            </TouchableOpacity>
+
+            <Text style={styles.cardTitle}>{destination.station_name}</Text>
+            <Text style={styles.cardText}>Address: {destination.address}</Text>
+            {destination.price && <Text style={styles.cardText}>Price: ${destination.price}</Text>}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.cardButton} onPress={openGoogleMaps}>
+                <Text style={styles.cardButtonText}>Get Directions</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cardButton} onPress={viewDetails}>
+                <Text style={styles.cardButtonText}>View Details</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      )}
+        )}
+
+      </Animated.View>
     </View>
   );
 };
@@ -328,5 +403,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FF0000",
+    borderRadius: 12.5,
+    zIndex: 10,
+  },
+  closeButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
   },
 });

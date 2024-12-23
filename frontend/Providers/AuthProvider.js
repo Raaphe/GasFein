@@ -18,12 +18,10 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        // Set up Axios interceptors
         const axiosInstance = axios.create();
 
         axiosInstance.interceptors.request.use(
             (config) => {
-                // Add Authorization header if token exists
                 if (authToken) {
                     config.headers.Authorization = `Bearer ${authToken}`;
                 }
@@ -38,7 +36,6 @@ export const AuthProvider = ({ children }) => {
             (response) => response,
             async (error) => {
                 if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-                    // Invalidate token and trigger logout
                     setAuthToken(null);
                     await logout();
                 }
@@ -67,7 +64,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const result = await signUp({ password, firstName, lastName, email, imageId });
             if (result.status === 201) {
-                setAuthToken(result.body.jwt); // Store token
+                setAuthToken(result.body.jwt);
                 return result;
             }
             throw new Error("Failed to create user.");
