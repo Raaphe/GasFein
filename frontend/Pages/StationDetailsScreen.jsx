@@ -44,8 +44,8 @@ export const StationDetailsScreen = ({ route, navigation }) => {
         setValues(prevValues => ({ ...prevValues, [index]: newValue }));
     };
 
-    const goToMapPage = () => {
-        navigation.navigate("Home");
+    const goToMapScreen = () => {
+        navigation.navigate("Map",{station});
     };
 
     return (
@@ -109,7 +109,7 @@ export const StationDetailsScreen = ({ route, navigation }) => {
                 ))}
             </ScrollView>
 
-            <TouchableOpacity style={styles.goButton} onPress={goToMapPage}>
+            <TouchableOpacity style={styles.goButton} onPress={goToMapScreen}>
                 <Text style={styles.goButtonText}>Go to Map</Text>
             </TouchableOpacity>
         </View>
