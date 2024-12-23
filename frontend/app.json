@@ -26,7 +26,7 @@
     },
     "extra": {
       "GASFEIN_TOKEN": "5b3ce3597851110001cf6248a9793b825c994cb1860795dd9da21586",
-      "BACKEND_IP": "http://yearBuddy:3005"
+      "BACKEND_IP": "http://192.168.2.22:3005"
     },
     "web": {
       "favicon": "./assets/favicon.png"

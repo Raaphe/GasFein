@@ -11,6 +11,8 @@ import { GasStationsContext } from "../Providers/GasStationProvider";
 import { config } from "../util/Config/general.config";
 
 export const MapScreen = ({ route, navigation }) => {
+  const { station } = route.params || {};
+
   const gasApi = new GasApiApi();
 
   const { isDarkTheme } = useDarkMode();
@@ -23,11 +25,10 @@ export const MapScreen = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { setnearByStations, nearByStations } = useContext(GasStationsContext);
+  const { setnearByStations } = useContext(GasStationsContext);
 
   const [cardY] = useState(new Animated.Value(100));
   const focusRef = useRef(null);
-  const { station } = route.params || {};
 
   const slideInCard = () => {
     Animated.timing(cardY, {
@@ -204,7 +205,7 @@ export const MapScreen = ({ route, navigation }) => {
     } else {
       console.log("Station or focusRef not found");
     }
-  }, [station]);
+  });
 
 
   useEffect(() => {
