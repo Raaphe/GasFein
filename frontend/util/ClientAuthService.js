@@ -33,7 +33,8 @@ export const signUp = async ({ password, firstName, lastName, email, imageId }) 
             password,
             profileImage: imageId,
         });
-
+        console.log(result);
+        
         if (result.status === 201) {
             await AsyncStorage.setItem("jwt_token", result.body.jwt);
             await AsyncStorage.setItem("user_id", result.body.id.toString());

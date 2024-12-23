@@ -1,8 +1,10 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { useFocusEffect } from '@react-navigation/native';
+import { GasStationsContext } from "../Providers/GasStationProvider";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView, Modal, TextInput } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import {config} from "../util/Config/general.config";
+import { config } from "../util/Config/general.config";
 import Dropdown from "../Components/Dropdown";
 
 const provinces = [
@@ -19,13 +21,17 @@ const citiesByProvince = {
     Alberta: ["Calgary", "Edmonton", "Red Deer"],
 };
 
-export const HomeScreen = ({ navigation }) => {
+export const StationsScreen = ({ navigation }) => {
     const [province, setProvince] = useState(null);
     const [city, setCity] = useState(null);
     const [stations, setStations] = useState([]);
     const { nearByStations } = useContext(GasStationsContext);
     const [otherPlace, setOtherPlace] = useState(false);
     const [text, setText] = useState("Nearby Gas Stations");
+    const [modalVisible, setModalVisible] = useState(false);
+    const [filterCriteria, setFilterCriteria] = useState("name");
+    const [sortOptionName, setSortOptionName] = useState('desc');
+    const [searchTerm, setSearchTerm] = useState("");
 
     const handleProvinceSelect = (selectedProvince) => {
         setProvince(selectedProvince);
@@ -45,13 +51,24 @@ export const HomeScreen = ({ navigation }) => {
         React.useCallback(() => {
             setStations(nearByStations);
         }, [otherPlace])
-      );
+    );
+
     useEffect(() => {
         fetchStations();
     }, [city]);
 
     const handleStationClick = (station) => {
-        navigation.navigate("StationDetails", { station })
+        navigation.navigate("StationDetails", { station });
+    };
+
+    const filterStations = () => {
+        let filtered = [...stations];
+            filtered.sort((a, b) =>
+                sortOptionName === "asc"
+                    ? a.station_name.localeCompare(b.station_name)
+                    : b.station_name.localeCompare(a.station_name)
+            );
+        return filtered;
     };
 
     return (
@@ -65,6 +82,13 @@ export const HomeScreen = ({ navigation }) => {
                 <Text style={styles.toggleButtonText}>
                     {otherPlace ? "Hide Other Places" : "Show Other Places"}
                 </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={styles.filterButton}
+                onPress={() => setModalVisible(true)}
+            >
+                <Text style={styles.filterButtonText}>Filters</Text>
             </TouchableOpacity>
 
             {otherPlace && (
@@ -87,12 +111,42 @@ export const HomeScreen = ({ navigation }) => {
                 </>
             )}
 
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>Filter Stations</Text>
+
+                        <View style={styles.filterOptions}>
+                            <TouchableOpacity
+                                style={styles.filterOption}
+                                onPress={() => setSortOptionName(sortOptionName=='desc'?'asc':'desc')}
+                            >
+                                <Text style={styles.filterOptionText}>{`Filter by Name (${sortOptionName=='desc'?'asc':'desc'})`}</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <TouchableOpacity
+                            style={styles.applyButton}
+                            onPress={() => setModalVisible(false)}
+                        >
+                            <Text style={styles.applyButtonText}>Apply Filters</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
             <ScrollView style={styles.scrollView}>
-                {stations.length > 0 ? (
-                    stations.map((station) => (
+                {filterStations().length > 0 ? (
+                    filterStations().map((station) => (
                         <TouchableOpacity
                             style={styles.stationCard}
                             onPress={() => handleStationClick(station)}
+                            key={station.id}
                         >
                             <Image
                                 source={{ uri: station.image }}
@@ -127,7 +181,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 20,
-        marginTop: 20,
+        marginTop: 100,
     },
     toggleButton: {
         backgroundColor: "#007BFF",
@@ -137,6 +191,19 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     toggleButtonText: {
+        fontSize: 16,
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    filterButton: {
+        backgroundColor: "#28a745",
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 20,
+        alignItems: "center",
+    },
+    filterButtonText: {
         fontSize: 16,
         color: "#fff",
         fontWeight: "bold",
@@ -185,4 +252,48 @@ const styles = StyleSheet.create({
         textAlign: "center",
         color: "#555",
     },
+    modalBackground: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalContainer: {
+        width: 300,
+        backgroundColor: "white",
+        borderRadius: 30,
+        padding: 20,
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 10,
+    },
+    filterOptions: {
+        padding: 10,
+    },
+    filterOption: {
+        padding: 5,
+        backgroundColor: "#f0f0f0",
+        marginVertical: 5,
+        margin:10,
+        borderRadius: 10,
+    },
+    filterOptionText: {
+        fontSize: 16,
+    },
+    applyButton: {
+        backgroundColor: "#007BFF",
+        padding: 10,
+        borderRadius: 5,
+        width: "100%",
+        alignItems: "center",
+    },
+    applyButtonText: {
+        color: "#fff",
+        fontWeight: "bold",
+    },
 });
+
+export default StationsScreen;

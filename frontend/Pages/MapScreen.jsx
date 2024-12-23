@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import * as Location from "expo-location";
 import { StyleSheet, Text, View, TouchableOpacity, Linking, Animated } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
@@ -10,7 +10,7 @@ import { lightTheme, darkTheme } from "../App";
 import { GasStationsContext } from "../Providers/GasStationProvider";
 import { config } from "../util/Config/general.config";
 
-export const MapScreen = ({ navigation }) => {
+export const MapScreen = ({ route, navigation }) => {
   const gasApi = new GasApiApi();
 
   const { isDarkTheme } = useDarkMode();
@@ -26,6 +26,8 @@ export const MapScreen = ({ navigation }) => {
   const { setnearByStations, nearByStations } = useContext(GasStationsContext);
 
   const [cardY] = useState(new Animated.Value(100));
+  const focusRef = useRef(null);
+  const { station } = route.params || {};
 
   const slideInCard = () => {
     Animated.timing(cardY, {
@@ -101,7 +103,6 @@ export const MapScreen = ({ navigation }) => {
     }
   };
 
-
   const getGasStations = async () => {
     if (location) {
       try {
@@ -136,7 +137,7 @@ export const MapScreen = ({ navigation }) => {
     });
 
     await Promise.all(geocodePromises);
-
+    console.log(station)
     setGasStations(tempListStations);
     setIsLoading(false);
   };
@@ -179,6 +180,32 @@ export const MapScreen = ({ navigation }) => {
   const viewDetails = () => {
     navigation.navigate("StationDetails", { station: destination })
   };
+
+  const focusOnStation = (coordinate) => {
+    if (focusRef.current && coordinate) {
+      focusRef.current.animateCamera(
+        {
+          center: coordinate,
+          zoom: 15,
+          heading: 0,
+          pitch: 45,
+        },
+        { duration: 1000 }
+      );
+    } else {
+      console.log("The coodinates from station details were not found");
+    }
+  };
+
+  useEffect(() => {
+    if (station && station.coordinates && focusRef.current) {
+      console.log(station.coordinates);
+      focusOnStation(station.coordinates);
+    } else {
+      console.log("Station or focusRef not found");
+    }
+  }, [station]);
+
 
   useEffect(() => {
     setTheme(isDarkTheme ? darkTheme : lightTheme);
@@ -236,6 +263,7 @@ export const MapScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <MapView
+        ref={focusRef}
         style={styles.map}
         initialRegion={{
           latitude: location.latitude,
