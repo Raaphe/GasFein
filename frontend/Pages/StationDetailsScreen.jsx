@@ -45,7 +45,7 @@ export const StationDetailsScreen = ({ route, navigation }) => {
     };
 
     const goToMapPage = () => {
-        navigation.navigate("Map", { station });
+        navigation.navigate("Home");
     };
 
     return (
