@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import {Text, Card, Menu, Button, Divider} from "react-native-paper";
+import { Text, Card, Menu, Button, Divider } from "react-native-paper";
 import { useDarkMode } from "../Providers/DarkModeProvider";
 import { lightTheme, darkTheme } from "../App";
 import axios from "axios";
@@ -17,6 +17,8 @@ export const AddCarScreen = () => {
     const [makes, setMakes] = useState([]);
     const [models, setModels] = useState([]);
     const [trims, setTrims] = useState([]);
+    const [colors, setColors] = useState([]);
+    const [carResponse, setCarResponse] = useState(null);
 
     const [makeMenuVisible, setMakeMenuVisible] = useState(false);
     const [modelMenuVisible, setModelMenuVisible] = useState(false);
@@ -75,35 +77,72 @@ export const AddCarScreen = () => {
         }
     };
 
-    const addCar = async () => {
+    const fetchColors = async (trim) => {
         try {
+            console.log("fetch colors")
             const response = await axios.get(
-                `https://api.vehicledatabases.com/ymm-specs/${selectedYear}/${selectedMake}/${selectedModel}/${selectedTrim}`,
+                `https://api.vehicledatabases.com/ymm-specs/${selectedYear}/${selectedMake}/${selectedModel}/${trim}`,
                 {
-                    transformResponse: [(data) => data],
                     headers: {
                         "Content-Encoding": "gzip",
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'x-AuthKey': '6442738e4090497388e9076dbb3508af',
+                        'x-AuthKey': 'e3518f4c3c5746b08b72229a0c077772',
                     },
                 }
             );
 
-            console.log(response.data);
-            console.log(response.data.colors.exterior);
+            setCarResponse(response.data)
+            setColors(getColors(response.data));
+        } catch (error) {
+            console.error("Error fetching colors:", error);
+        }
+    };
 
-
+    const addCar = async () => {
+        try {
+            console.log("add car")
+            console.log(carResponse.data);
+            console.log(carResponse.data.feature.colors);
         } catch (error) {
             console.error("Error fetching trims:", error);
         }
-    }
+    };
+
+    const getColors = (data) => {
+        console.log("get Color")
+        console.log(data);
+        const result = [];
+
+        // Function to process color strings and push RGB values
+        const processColors = (colors) => {
+            colors.forEach(colorObj => {
+                console.log("INDIVIDUAL COLOR", colorObj);
+                const [r, g, b] = colorObj.split(',').map(Number);
+                result.push([r, g, b]);
+            });
+        };
+
+        result.push([191, 191, 191]);
+
+        // Check both feature.colors.exterior and basic.colors.exterior
+        const featureColors = data?.data.feature?.colors?.exterior || [];
+        const basicColors = data?.basic?.colors?.exterior || [];
+
+        // Process both feature and basic colors
+        processColors(featureColors);
+        processColors(basicColors);
+
+        console.log("color result", result)
+        return result;
+    };
 
     const onYearSelect = async (year) => {
         setSelectedYear(year);
         setMakes([]);
         setModels([]);
         setTrims([]);
+        setColors([]);
         await fetchMakes(year);
     };
 
@@ -111,13 +150,21 @@ export const AddCarScreen = () => {
         setSelectedMake(make);
         setModels([]);
         setTrims([]);
+        setColors([]);
         await fetchModels(make);
     };
 
     const onModelSelect = async (model) => {
         setSelectedModel(model);
         setTrims([]);
+        setColors([]);
         await fetchTrims(model);
+    };
+
+    const onTrimSelect = (trim) => {
+        setSelectedTrim(trim);
+        setColors([]);
+        fetchColors(trim);
     };
 
     return (
@@ -228,7 +275,7 @@ export const AddCarScreen = () => {
                             <Menu.Item
                                 key={index}
                                 onPress={() => {
-                                    setSelectedTrim(trim);
+                                    onTrimSelect(trim);
                                     setTrimMenuVisible(false);
                                 }}
                                 title={trim}
@@ -238,23 +285,42 @@ export const AddCarScreen = () => {
                 </Card>
             )}
 
+            {/* Colors */}
+            {colors.length > 0 && (
+                <Card style={styles.card}>
+                    <Text style={styles.sectionHeader}>Select Color</Text>
+                    <FlatList
+                        data={[...colors, { color: "Other", rgb: [255, 255, 255] }]} // Add "Other" option
+                        keyExtractor={(item) => item.color}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.flatListContainer}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity
+                                style={[styles.colorBox, { backgroundColor: `rgb(${item.rgb.join(",")})` }]}
+                                onPress={() => setSelectedColor(item.color === "Other" ? null : item.color)}
+                            >
+                                {item.color === "Other" && (
+                                    <Text style={{ color: theme.colors.text }}>Other</Text>
+                                )}
+                            </TouchableOpacity>
+                        )}
+                    />
+                </Card>
+            )}
 
             {/* Divider */}
             <Divider style={styles.divider} />
 
-
-            {selectedTrim &&
-                (
-                    <Button
-                        mode="contained"
-                        style={styles.button}
-                        onPress={() => addCar()}
-                    >
-                        Add Car
-                    </Button>
-                )
-            }
-
+            {selectedTrim && (
+                <Button
+                    mode="contained"
+                    style={styles.button}
+                    onPress={() => addCar()}
+                >
+                    Add Car
+                </Button>
+            )}
         </View>
     );
 };
@@ -296,6 +362,13 @@ const styles = StyleSheet.create({
     },
     divider: {
         marginTop: 20,
-        backgroundColor: "#ccc",
+    },
+    colorBox: {
+        width: 40,
+        height: 40,
+        marginRight: 10,
+        borderRadius: 8,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });

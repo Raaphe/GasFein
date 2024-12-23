@@ -19,7 +19,7 @@ const citiesByProvince = {
     Alberta: ["Calgary", "Edmonton", "Red Deer"],
 };
 
-export const HomeScreen = ({ navigation }) => {
+export const Gas = ({ navigation }) => {
     const [province, setProvince] = useState(null);
     const [city, setCity] = useState(null);
     const [stations, setStations] = useState([]);
