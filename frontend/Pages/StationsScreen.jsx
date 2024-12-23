@@ -1,12 +1,11 @@
-import axios from "axios";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Modal } from "react-native";
 import { useFocusEffect } from '@react-navigation/native';
 import { GasStationsContext } from "../Providers/GasStationProvider";
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Modal } from "react-native";
-import { config } from "../util/Config/general.config";
-import Dropdown from "../Components/Dropdown";
 import { Warning } from "../Components/Warning";
+import Dropdown from "../Components/Dropdown";
 import { GasApiApi } from "../api/generated-client/src";
+import Animated, { Easing, FadeInUp } from 'react-native-reanimated';
 
 const provinces = [
     { label: "Ontario", value: "Ontario" },
@@ -62,7 +61,6 @@ export const StationsScreen = ({ navigation }) => {
             fetchStations();
         }
     }, [city, province]);
-    
 
     const handleStationClick = (station) => {
         navigation.navigate("StationDetails", { station });
@@ -173,24 +171,28 @@ export const StationsScreen = ({ navigation }) => {
             <ScrollView style={styles.scrollView}>
                 {filterStations().length > 0 ? (
                     filterStations().map((station, index) => (
-                        <TouchableOpacity
-                            style={styles.stationCard}
-                            onPress={() => handleStationClick(station)}
+                        <Animated.View
                             key={index}
+                            entering={FadeInUp.delay(index * 100).duration(500).easing(Easing.ease)}
                         >
-                            <Image
-                                source={{ uri: station.image }}
-                                style={styles.stationImage}
-                                resizeMode="contain"
-                            />
-                            <View style={styles.stationInfo}>
-                                <Text style={styles.stationName}>{station.station_name}</Text>
-                                <Text style={styles.stationPrice}>{station.price}¢/L</Text>
-                                <Text style={styles.stationLastUpdate}>
-                                    Updated {station.last_update} ago
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.stationCard}
+                                onPress={() => handleStationClick(station)}
+                            >
+                                <Image
+                                    source={{ uri: station.image }}
+                                    style={styles.stationImage}
+                                    resizeMode="contain"
+                                />
+                                <View style={styles.stationInfo}>
+                                    <Text style={styles.stationName}>{station.station_name}</Text>
+                                    <Text style={styles.stationPrice}>{station.price}¢/L</Text>
+                                    <Text style={styles.stationLastUpdate}>
+                                        Updated {station.last_update} ago
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </Animated.View>
                     ))
                 ) : (
                     <Text style={styles.noStationsText}>No Gas Stations available</Text>

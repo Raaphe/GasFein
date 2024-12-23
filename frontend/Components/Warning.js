@@ -4,7 +4,7 @@ import { Modal, Portal, Text, Button } from "react-native-paper";
 export const Warning = ({ visible, onDismiss }) => {
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={onDismiss} contentContainerStyle={styles.modalContainer}>
+      <Modal visible={visible} animationType="fade" onDismiss={onDismiss} contentContainerStyle={styles.modalContainer}>
         <Text style={styles.title}>Warning</Text>
         <Text style={styles.message}>
           By choosing to view gas stations in other provinces, the routing functionality is not available. This option is only available for stations near your location.
