@@ -58,8 +58,11 @@ export const StationsScreen = ({ navigation }) => {
     );
 
     useEffect(() => {
-        fetchStations();
-    }, [city]);
+        if (city && province) {
+            fetchStations();
+        }
+    }, [city, province]);
+    
 
     const handleStationClick = (station) => {
         navigation.navigate("StationDetails", { station });
@@ -115,7 +118,7 @@ export const StationsScreen = ({ navigation }) => {
                         <>
                             <Dropdown
                                 label="Province"
-                                data={provinces.map((prov) => prov.label)}
+                                data={provinces.map((prov, key) => prov.label)}
                                 onSelect={handleProvinceSelect}
                                 selectedValue={province}
                             />
@@ -169,11 +172,11 @@ export const StationsScreen = ({ navigation }) => {
 
             <ScrollView style={styles.scrollView}>
                 {filterStations().length > 0 ? (
-                    filterStations().map((station) => (
+                    filterStations().map((station, index) => (
                         <TouchableOpacity
                             style={styles.stationCard}
                             onPress={() => handleStationClick(station)}
-                            key={station.id}
+                            key={index}
                         >
                             <Image
                                 source={{ uri: station.image }}
