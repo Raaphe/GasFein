@@ -37,7 +37,6 @@ class GasApiService {
                 station.image = this.gasStationLogos[station.station_name] || this.gasStationLogos["default"];
             })
 
-            console.log(response);
 
             return response.data;
         } catch (error) {

@@ -7,7 +7,6 @@ const {MapService} = require('../services/map.services')
 const directions = async (req, res) => {
     try {
         const points = req.body;
-        // console.log(points);
 
         if (!Array.isArray(points) || points.length < 2) {
             return res.status(400).json({ message: "At least two points (coordinates or addresses) are required for the route." });
@@ -15,7 +14,6 @@ const directions = async (req, res) => {
 
         const start = points[0];
         const end = points[points.length - 1];
-        // console.log(points);
         
 
         const isValidPoint = (point) => {
