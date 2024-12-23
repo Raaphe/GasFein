@@ -5,6 +5,7 @@ import {
     StyleSheet,
     ScrollView,
     Image,
+    TouchableOpacity,
 } from "react-native";
 import VerticalSlider from "rn-vertical-slider";
 import Svg, { Path } from "react-native-svg";
@@ -41,6 +42,10 @@ export const StationDetailsScreen = ({ route, navigation }) => {
 
     const handleSliderChange = (index, newValue) => {
         setValues(prevValues => ({ ...prevValues, [index]: newValue }));
+    };
+
+    const goToMapPage = () => {
+        navigation.navigate("Map", { station });
     };
 
     return (
@@ -103,6 +108,10 @@ export const StationDetailsScreen = ({ route, navigation }) => {
                     </View>
                 ))}
             </ScrollView>
+
+            <TouchableOpacity style={styles.goButton} onPress={goToMapPage}>
+                <Text style={styles.goButtonText}>Go to Map</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -203,20 +212,21 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginTop: 10,
     },
-    backButton: {
+    goButton: {
         position: "absolute",
-        top: 20,
-        left: 20,
-        zIndex: 10,
-        backgroundColor: "#2979FF",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 10,
+        bottom: 20,
+        left: "40%",
+        backgroundColor: "#28A745",
+        paddingVertical: 15,
+        paddingHorizontal: 10,
+        borderRadius: 30,
+        elevation: 5,
     },
-    backButtonText: {
+    goButtonText: {
         color: "#fff",
         fontSize: 18,
-        fontWeight: "600",
+        fontWeight: "700",
+        textAlign: "center",
     },
     indicator: {
         borderRadius: 12,

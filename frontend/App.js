@@ -2,10 +2,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DarkModeProvider, useDarkMode } from "./Providers/DarkModeProvider";
 import { createTheme, ThemeProvider } from "@shopify/restyle";
-import {PaperProvider} from "react-native-paper";
+import { PaperProvider } from "react-native-paper";
 import React from "react";
+import { Ionicons } from '@expo/vector-icons';
 
-import { Gas } from "./Pages/Gas";
+import { StationsScreen } from "./Pages/StationsScreen";
 import { MapScreen } from "./Pages/MapScreen";
 import { StationDetailsScreen } from "./Pages/StationDetailsScreen";
 import { CarScreen } from "./Pages/CarScreen";
@@ -15,10 +16,10 @@ import { AuthProvider, useAuth } from "./Providers/AuthProvider";
 import { LogoutButton } from "./Components/LogoutButton";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { DarkModeToggle } from "./Components/DarkModeToggle";
-import {createStackNavigator} from "@react-navigation/native/src/__stubs__/createStackNavigator";
-import {RegistrationScreen} from "./Pages/RegistrationScreen";
-import {AddCarScreen} from "./Pages/AddCarScreen";
-import {GasStationsProvider} from "./Providers/GasStationProvider";
+import { createStackNavigator } from "@react-navigation/native/src/__stubs__/createStackNavigator";
+import { RegistrationScreen } from "./Pages/RegistrationScreen";
+import { AddCarScreen } from "./Pages/AddCarScreen";
+import { GasStationsProvider } from "./Providers/GasStationProvider";
 
 export const lightTheme = createTheme({
     colors: {
@@ -27,10 +28,10 @@ export const lightTheme = createTheme({
         primary: '#6200ee',
         secondary: '#534f4f',
         border: '#ccc',
-        surface: '#ffffff', // For components like cards
-        tabBarBackground: '#f8f8f8', // Tab bar background for light mode
-        drawerBackground: '#ffffff', // Drawer background for light mode
-        drawerHeaderBackground: '#ccc', // Light header color
+        surface: '#ffffff',
+        tabBarBackground: '#f8f8f8',
+        drawerBackground: '#ffffff',
+        drawerHeaderBackground: '#ccc',
     },
     spacing: {
         s: 8,
@@ -56,10 +57,10 @@ export const darkTheme = createTheme({
         primary: '#6200ee',
         secondary: '#534f4f',
         border: '#ccc',
-        surface: '#121212', // Darker surface color for better contrast
-        tabBarBackground: '#333333', // Tab bar background for dark mode
-        drawerBackground: '#121212', // Drawer background for dark mode
-        drawerHeaderBackground: '#333333', // Dark header color (can be darker for contrast)
+        surface: '#121212',
+        tabBarBackground: '#333333',
+        drawerBackground: '#121212',
+        drawerHeaderBackground: '#333333',
     },
     spacing: {
         s: 8,
@@ -89,9 +90,36 @@ const BottomTabs = () => {
     const { isDarkTheme } = useDarkMode();
 
     const tabScreens = [
-        <Tab.Screen key="Map" name="Map" component={MapScreen} />,
-        <Tab.Screen key="Car" name="Car" component={CarScreen} />,
-        // <Tab.Screen key="HomeScreen" name="Home" component={HomeScreen} />,
+        <Tab.Screen 
+            key="Map" 
+            name="Map" 
+            component={MapScreen} 
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                    <Ionicons name="map" size={size} color={color} />
+                ),
+            }} 
+        />,
+        <Tab.Screen 
+            key="Car" 
+            name="Car" 
+            component={CarScreen} 
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                    <Ionicons name="car" size={size} color={color} />
+                ),
+            }} 
+        />,
+        <Tab.Screen 
+            key="StationsScreen" 
+            name="Stations" 
+            component={StationsScreen} 
+            options={{
+                tabBarIcon: ({ color, size }) => (
+                    <Ionicons name="list" size={size} color={color} />
+                ),
+            }} 
+        />,
     ];
 
     if (!authToken) {
@@ -103,6 +131,9 @@ const BottomTabs = () => {
                 component={DarkModeToggle}
                 options={{
                     tabBarButton: () => <DarkModeToggle />,
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="moon" size={size} color={color} />
+                    ),
                 }}
             />
         );
@@ -114,6 +145,9 @@ const BottomTabs = () => {
                 component={DarkModeToggle}
                 options={{
                     tabBarButton: () => <DarkModeToggle />,
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="moon" size={size} color={color} />
+                    ),
                 }}
             />
         );
@@ -140,15 +174,34 @@ const BottomTabs = () => {
     );
 };
 
-
 const DrawerNavigator = () => {
     const { authToken } = useAuth();
-    const { isDarkTheme, toggleDarkMode } = useDarkMode(); // Add toggleDarkMode function
+    const { isDarkTheme, toggleDarkMode } = useDarkMode();
 
     const drawerScreens = [
         <Drawer.Screen key="Home" name="Home" component={BottomTabs} />,
+        <Drawer.Screen 
+            name="Map" 
+            component={MapScreen} 
+            options={{
+                drawerIcon: ({ color, size }) => (
+                    <Ionicons name="map" size={size} color={color} />
+                ),
+            }}
+        />,
         <Drawer.Screen key="Settings" name="Settings" component={SettingsScreen} />,
-        <Drawer.Screen key="StationDetails" name="StationDetails" component={StationDetailsScreen}  options={{title: "Station Details", headerTitle: "Station Details"}}/>
+        <Drawer.Screen 
+            key="StationDetails" 
+            name="StationDetails" 
+            component={StationDetailsScreen}  
+            options={{
+                title: "Station Details",
+                headerTitle: "Station Details",
+                drawerIcon: ({ color, size }) => (
+                    <Ionicons name="ios-information-circle" size={size} color={color} />
+                ),
+            }}
+        />,
     ];
 
     if (authToken) {
@@ -163,14 +216,24 @@ const DrawerNavigator = () => {
                             ? darkTheme.colors.drawerBackground
                             : lightTheme.colors.drawerBackground,
                     },
-            }}/>
+                    drawerIcon: ({ color, size }) => (
+                        <Ionicons name="log-out" size={size} color={color} />
+                    ),
+                }}
+            />
         );
         drawerScreens.push(
             <Drawer.Screen
                 key="AddCarScreen"
                 name="AddCarScreen"
                 component={AddCarScreen}
-                options={{title: "Add Car", headerTitle: "Add Car"}}
+                options={{
+                    title: "Add Car",
+                    headerTitle: "Add Car",
+                    drawerIcon: ({ color, size }) => (
+                        <Ionicons name="car-sport" size={size} color={color} />
+                    ),
+                }}
             />
         );
     } else {
@@ -181,7 +244,6 @@ const DrawerNavigator = () => {
                 component={RegistrationScreen}
             />
         );
-
     }
 
     return (
