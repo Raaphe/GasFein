@@ -155,6 +155,7 @@ const BottomTabs = () => {
 
     return (
         <Tab.Navigator
+            key="tabKey"
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: {
@@ -181,6 +182,7 @@ const DrawerNavigator = () => {
     const drawerScreens = [
         <Drawer.Screen key="Home" name="Home" component={BottomTabs} />,
         <Drawer.Screen
+            key="DrawerMapKey"
             name="Map"
             component={MapScreen}
             options={{
@@ -248,6 +250,7 @@ const DrawerNavigator = () => {
 
     return (
         <Drawer.Navigator
+            key="drawerKey"
             id="drawer"
             screenOptions={{
                 headerTransparent: true,

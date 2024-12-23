@@ -5,6 +5,7 @@ import { useDarkMode } from "../Providers/DarkModeProvider";
 import { darkTheme, lightTheme } from "../App";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../Providers/AuthProvider";
+import { Regex } from '../Components/Regex';
 
 export const RegistrationScreen = ({ navigation }) => {
     const [form, setForm] = useState({
@@ -20,7 +21,6 @@ export const RegistrationScreen = ({ navigation }) => {
     const nav = useNavigation();
     const { authToken, loginUser, logoutUser, register } = useAuth();
 
-
     useEffect(() => {
         setTheme(isDarkTheme ? darkTheme : lightTheme);
     }, [isDarkTheme]);
@@ -30,11 +30,41 @@ export const RegistrationScreen = ({ navigation }) => {
     };
 
     const handleRegister = async () => {
+        const validationResults = {
+            firstNameValid: Regex.firstNameRegex.test(form.firstName.trim()),
+            lastNameValid: Regex.lastNameRegex.test(form.lastName.trim()),
+            emailValid: Regex.emailRegex.test(form.email.trim()),
+            passwordValid: Regex.passwordRegex.test(form.password.trim()),
+        };
+
+        const errorMessages = [];
+        if (!validationResults.firstNameValid) {
+            errorMessages.push("First name must be between 2 and 30 letters.");
+        }
+        if (!validationResults.lastNameValid) {
+            errorMessages.push("Last name must be between 2 and 30 letters.");
+        }
+        if (!validationResults.emailValid) {
+            errorMessages.push("Email format is invalid.");
+        }
+        if (!validationResults.passwordValid) {
+            errorMessages.push(
+                "Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character."
+            );
+        }
+
         if (form.password.trim() !== form.confirmPassword.trim()) {
-            alert("Passwords do not match!");
+            console.log(form.password, form.confirmPassword);
+            
+            errorMessages.push("Passwords do not match.");
+        }
+
+        if (errorMessages.length > 0) {
+            alert(errorMessages.join("\n"));
             return;
         }
 
+        console.log("Registration successful!");
         try {
             const res = await register({
                 password: form.password.trim(),
@@ -45,12 +75,13 @@ export const RegistrationScreen = ({ navigation }) => {
             });
             console.log(res);
             alert("Registration successful!");
-            nav.navigate("NextScreen"); // Redirect after success
+            nav.navigate("Home"); 
         } catch (error) {
             console.error("Registration error:", error);
             alert("Registration failed. Please try again.");
         }
     };
+
     const handleLoginRedirect = () => {
         nav.navigate("Login");
     };
@@ -134,7 +165,6 @@ export const RegistrationScreen = ({ navigation }) => {
                     borderColor: theme.colors.primary,
                 }}
             />
-
 
             <TextInput
                 textColor={theme.colors.text}
