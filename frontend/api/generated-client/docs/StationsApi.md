@@ -1,6 +1,6 @@
 # GasFeinApi.StationsApi
 
-All URIs are relative to *http://192.168.2.22:3005/api/v1*
+All URIs are relative to *http://127.0.0.1:3005/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
