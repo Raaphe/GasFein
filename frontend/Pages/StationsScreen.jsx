@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 import { GasStationsContext } from "../Providers/GasStationProvider";
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, ScrollView, Modal, TextInput } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Modal, TextInput } from "react-native";
 import { config } from "../util/Config/general.config";
 import Dropdown from "../Components/Dropdown";
+import { Warning } from "../Components/Warning";
 
 const provinces = [
     { label: "Ontario", value: "Ontario" },
@@ -29,9 +29,8 @@ export const StationsScreen = ({ navigation }) => {
     const [otherPlace, setOtherPlace] = useState(false);
     const [text, setText] = useState("Nearby Gas Stations");
     const [modalVisible, setModalVisible] = useState(false);
-    const [filterCriteria, setFilterCriteria] = useState("name");
+    const [modalWarning, setModalWarning] = useState(false);
     const [sortOptionName, setSortOptionName] = useState('desc');
-    const [searchTerm, setSearchTerm] = useState("");
 
     const handleProvinceSelect = (selectedProvince) => {
         setProvince(selectedProvince);
@@ -61,13 +60,18 @@ export const StationsScreen = ({ navigation }) => {
         navigation.navigate("StationDetails", { station });
     };
 
+    const handleOtherPlace = () => { 
+        setModalWarning(true);
+        setOtherPlace(!otherPlace)
+    } 
+
     const filterStations = () => {
         let filtered = [...stations];
-            filtered.sort((a, b) =>
-                sortOptionName === "asc"
-                    ? a.station_name.localeCompare(b.station_name)
-                    : b.station_name.localeCompare(a.station_name)
-            );
+        filtered.sort((a, b) =>
+            sortOptionName === "asc"
+                ? a.station_name.localeCompare(b.station_name)
+                : b.station_name.localeCompare(a.station_name)
+        );
         return filtered;
     };
 
@@ -77,7 +81,7 @@ export const StationsScreen = ({ navigation }) => {
 
             <TouchableOpacity
                 style={styles.toggleButton}
-                onPress={() => setOtherPlace(!otherPlace)}
+                onPress={() => handleOtherPlace()}
             >
                 <Text style={styles.toggleButtonText}>
                     {otherPlace ? "Hide Other Places" : "Show Other Places"}
@@ -93,23 +97,32 @@ export const StationsScreen = ({ navigation }) => {
 
             {otherPlace && (
                 <>
-                    <Dropdown
-                        label="Province"
-                        data={provinces.map((prov) => prov.label)}
-                        onSelect={handleProvinceSelect}
-                        selectedValue={province}
-                    />
-
-                    {province && (
-                        <Dropdown
-                            label="City"
-                            data={citiesByProvince[province] || []}
-                            onSelect={setCity}
-                            selectedValue={city}
+                    {modalWarning ? (
+                        <Warning
+                            visible={modalWarning}
+                            onDismiss={() => setModalWarning(false)}
                         />
+                    ) : (
+                        <>
+                            <Dropdown
+                                label="Province"
+                                data={provinces.map((prov) => prov.label)}
+                                onSelect={handleProvinceSelect}
+                                selectedValue={province}
+                            />
+                            {province && (
+                                <Dropdown
+                                    label="City"
+                                    data={citiesByProvince[province] || []}
+                                    onSelect={setCity}
+                                    selectedValue={city}
+                                />
+                            )}
+                        </>
                     )}
                 </>
             )}
+
 
             <Modal
                 animationType="fade"
@@ -124,9 +137,9 @@ export const StationsScreen = ({ navigation }) => {
                         <View style={styles.filterOptions}>
                             <TouchableOpacity
                                 style={styles.filterOption}
-                                onPress={() => setSortOptionName(sortOptionName=='desc'?'asc':'desc')}
+                                onPress={() => setSortOptionName(sortOptionName == 'desc' ? 'asc' : 'desc')}
                             >
-                                <Text style={styles.filterOptionText}>{`Filter by Name (${sortOptionName=='desc'?'asc':'desc'})`}</Text>
+                                <Text style={styles.filterOptionText}>{`Filter by Name (${sortOptionName == 'desc' ? 'asc' : 'desc'})`}</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -277,7 +290,7 @@ const styles = StyleSheet.create({
         padding: 5,
         backgroundColor: "#f0f0f0",
         marginVertical: 5,
-        margin:10,
+        margin: 10,
         borderRadius: 10,
     },
     filterOptionText: {
