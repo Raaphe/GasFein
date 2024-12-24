@@ -1,12 +1,13 @@
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
 import { getToken, login, logout, signUp } from '../util/ClientAuthService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as GasFeinApi from "../api/generated-client/src";
 
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [authToken, setAuthToken] = useState("");
-    const [user, setUser] = useState({});
 
     useEffect(() => {
         const initializeToken = async () => {
@@ -49,8 +50,8 @@ export const AuthProvider = ({ children }) => {
     }, [authToken]);
 
     const loginUser = async (loginInfo) => {
-        await login(loginInfo);
-        let token = await getToken();
+        let res = await login(loginInfo);
+        let token = res.jwt;
         console.log("token", token);
         setAuthToken(token);
     };
@@ -60,12 +61,31 @@ export const AuthProvider = ({ children }) => {
         await logout();
     };
 
+    const getUser = async () => {
+        try {
+            const id =  await AsyncStorage.getItem("user_id");
+            console.log(`${GasFeinApi.ApiClient.instance.basePath}/users/${id}`);
+
+            const response = await axios.get(`${GasFeinApi.ApiClient.instance.basePath}/users/${id}`);
+            
+            if (response.status === 200 && response.data) {
+                return response.data;
+            }
+        
+            console.error("Unexpected response format:", response.data);
+            throw new Error("Unexpected response format.");
+        } catch (error) {
+            console.error("fetching error:", error.response?.data || error.message || error);
+            throw new Error("Failed to fetch user.");
+        }
+    }
+
     const register = async ({ password, firstName, lastName, email, imageId }) => {
         try {
             const result = await signUp({ password, firstName, lastName, email, imageId });
-            if (result.status === 201) {
-                setAuthToken(result.body.jwt);
-                return result;
+            if (result?.jwt) {
+                setAuthToken(result.jwt)
+                return result.jwt;
             }
             throw new Error("Failed to create user.");
         } catch (error) {
@@ -75,7 +95,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ authToken, loginUser, logoutUser, register }}>
+        <AuthContext.Provider value={{ authToken, loginUser, logoutUser, register, getUser }}>
             {children}
         </AuthContext.Provider>
     );

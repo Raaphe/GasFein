@@ -59,13 +59,23 @@ const getUserByJwt = async (req, res) => {
 
 const createUser = async (req, res) => {
     const { firstName, lastName, email, password, profileImage } = req.body;
+
     try {
+        console.log("Received request body:", req.body);
+        
+        // Validate required fields
+        if (!firstName || !lastName || !email || !password) {
+            return res.status(400).json({ message: "All fields are required." });
+        }
+
         const user = await userService.createUser(firstName, lastName, email, password, profileImage);
-        res.status(201).json(user);
+        return res.status(201).json(user);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Error in createUser controller:", error.message);
+        return res.status(500).json({ message: error.message });
     }
 };
+
 
 const updateUser = async (req, res) => {
     const { userId } = req.params;

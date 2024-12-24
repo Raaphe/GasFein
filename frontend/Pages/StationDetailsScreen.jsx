@@ -9,26 +9,27 @@ import {
 } from "react-native";
 import VerticalSlider from "rn-vertical-slider";
 import Svg, { Path } from "react-native-svg";
+import { useAuth } from "../Providers/AuthProvider";
 
 export const StationDetailsScreen = ({ route, navigation }) => {
     const { station } = route.params;
+
+    const { getUser } = useAuth();
     const [gasCost, setGasCost] = useState({});
     const [values, setValues] = useState({});
     const [cars, setCars] = useState([]);
 
     useEffect(() => {
-        setCars([ 
-            { make: "Tesla", model: "Model 3", tankVolume: 60, year: 2020, color: "black" },
-            { make: "Ford", model: "Mustang", tankVolume: 50, year: 2021, color: "red" },
-            { make: "Chevrolet", model: "Camaro", tankVolume: 65, year: 2022, color: "blue" },
-            { make: "BMW", model: "X5", tankVolume: 70, year: 2023, color: "white" },
-            { make: "Audi", model: "Q7", tankVolume: 75, year: 2021, color: "gray" },
-            { make: "Mercedes-Benz", model: "E-Class", tankVolume: 70, year: 2020, color: "silver" },
-            { make: "Porsche", model: "911", tankVolume: 60, year: 2022, color: "yellow" },
-            { make: "Honda", model: "Civic", tankVolume: 50, year: 2019, color: "green" },
-            { make: "Toyota", model: "Corolla", tankVolume: 55, year: 2021, color: "blue" },
-            { make: "Nissan", model: "Altima", tankVolume: 60, year: 2020, color: "orange" },
-        ]);
+
+        const getCars = async () => {
+            let user = await getUser();
+            console.log("USER");
+            setCars(user.cars ?? []);
+            
+            console.log(user);
+
+        }
+        getCars();
     }, []);
 
     useEffect(() => {

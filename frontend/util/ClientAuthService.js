@@ -1,9 +1,41 @@
+import axios from "axios";
 import * as GasFeinApi from "../api/generated-client/src";
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import config from "./Config/general.config";
 
 const userApi = new GasFeinApi.UsersApi();
 
 export const login = async (loginInfo) => {
+
+
+    try {
+
+        console.log(loginInfo);
+        
+        const response = await axios.post(`${GasFeinApi.ApiClient.instance.basePath}/users/login`, {
+            email: loginInfo.username,
+            password: loginInfo.password
+        });
+    
+        console.log(response);
+        
+
+        if (response.status === 200 && response.data.jwt && response.data.id) {
+            const { jwt, id } = response.data;
+            await AsyncStorage.setItem("jwt_token", jwt);
+            await AsyncStorage.setItem("user_id", id.toString());
+            console.log("User logged in successfully:", response.data);
+            return response.data;
+        }
+    
+        console.error("Unexpected response format:", response.data);
+        throw new Error("Unexpected response format.");
+    } catch (error) {
+        console.error("Registration error:", error.response?.data || error.message || error);
+        throw new Error("Failed to create user.");
+    }
+    
+
     let usersLoginPostRequest = new GasFeinApi.UsersLoginPostRequest();
     usersLoginPostRequest.email = loginInfo.username.trim();
     usersLoginPostRequest.password = loginInfo.password.trim();
@@ -15,6 +47,7 @@ export const login = async (loginInfo) => {
             if (response.status === 200) {
                 await AsyncStorage.setItem("jwt_token", response.body.jwt);
                 await AsyncStorage.setItem("user_id", response.body.id.toString());
+                
                 return response.body.jwt;
             }
 
@@ -25,27 +58,29 @@ export const login = async (loginInfo) => {
 
 export const signUp = async ({ password, firstName, lastName, email, imageId }) => {
     try {
-        console.log("Creating new user...");
-        const result = await userApi.usersPost({
+        const response = await axios.post(`${GasFeinApi.ApiClient.instance.basePath}/users`, {
             firstName,
             lastName,
             email,
             password,
             profileImage: imageId,
         });
-        console.log(result);
-        
-        if (result.status === 201) {
-            await AsyncStorage.setItem("jwt_token", result.body.jwt);
-            await AsyncStorage.setItem("user_id", result.body.id.toString());
-            return result;
+    
+        if (response.status === 201 && response.data.jwt && response.data.id) {
+            const { jwt, id } = response.data;
+            await AsyncStorage.setItem("jwt_token", jwt);
+            await AsyncStorage.setItem("user_id", id.toString());
+            console.log("User created successfully:", response.data);
+            return response.data;
         }
-
-        throw new Error("Sign-up failed. Status not 201.");
-    } catch (e) {
-        console.error("Sign-up error:", e);
-        throw e;
+    
+        console.error("Unexpected response format:", response.data);
+        throw new Error("Unexpected response format.");
+    } catch (error) {
+        console.error("Registration error:", error.response?.data || error.message || error);
+        throw new Error("Failed to create user.");
     }
+    
 };
 
 

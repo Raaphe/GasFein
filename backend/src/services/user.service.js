@@ -27,6 +27,10 @@ class UserService {
      * @returns {Promise<User>} - L'utilisateur trouvé.
      */
     fetchUser = async (userId) => {
+
+        console.log(await this.userRepository.find());
+        
+
         const user = await this.userRepository.findOne({
             where: { id: userId },
             relations: ['cars', 'stations'],
@@ -71,40 +75,50 @@ class UserService {
             return null;
         }
 
-        return this.fetchUser(decodeJwt(jwt).data);
+        return await this.fetchUser(decodeJwt(jwt).data);
     };
 
     /**
-     * Crée un nouvel utilisateur et retourne l'utilisateur créé.
-     * @param {string} firstName - Le prénom de l'utilisateur.
-     * @param {string} lastName - Le nom de famille de l'utilisateur.
-     * @param {string} email - L'adresse e-mail de l'utilisateur.
-     * @param {string} password - Le mot de passe de l'utilisateur.
-     * @param {string} profileImage - L'image de profil de l'utilisateur.
-     * @returns {Promise<User>} - L'utilisateur créé.
+     * Creates a new user and returns the created user with a JWT.
+     * @param {string} firstName - The user's first name.
+     * @param {string} lastName - The user's last name.
+     * @param {string} email - The user's email address.
+     * @param {string} password - The user's password.
+     * @param {string} profileImage - The user's profile image.
+     * @returns {Promise<User>} - The created user with a JWT.
      */
     createUser = async (firstName, lastName, email, password, profileImage) => {
         try {
-            console.log("creating user =====")
+            console.log("Creating user...");
+            
+            // Hash the password first
+            const passwordHash = await hashPassword(password);
+            
+            // Create the user instance
             const newUser = this.userRepository.create({
                 first_name: firstName,
                 last_name: lastName,
                 email,
-                password,
+                password_hash: passwordHash, // Use the hash instead of plain password
                 profile_image: profileImage,
             });
 
-            newUser.password_hash = await hashPassword(password);
-
+            // Save the user to the database
             const savedUser = await this.userRepository.save(newUser);
-            savedUser.password_hash = "";
+            
+            // Remove sensitive data before returning
+            savedUser.password_hash = undefined;
 
-            return {...savedUser, jwt: signJwt(savedUser.id)};
+            // Sign a JWT token
+            const jwt = signJwt(savedUser.id);
+
+            return { ...savedUser, jwt };
         } catch (error) {
-            console.error('Erreur lors de la création de l’utilisateur:', error.message);
-            throw new Error('Impossible de créer l’utilisateur');
+            console.error("Error creating user:", error.message);
+            throw new Error("Unable to create the user");
         }
-    }
+    };
+
 
     /**
      * Met à jour les informations d'un utilisateur et retourne l'utilisateur mis à jour.

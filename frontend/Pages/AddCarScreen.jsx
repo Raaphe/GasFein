@@ -92,6 +92,9 @@ export const AddCarScreen = () => {
                 }
             );
 
+            console.log("Response OBJ", response);
+            
+
             setCarResponse(response.data)
             setColors(getColors(response.data));
         } catch (error) {

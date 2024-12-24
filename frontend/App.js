@@ -20,6 +20,17 @@ import { createStackNavigator } from "@react-navigation/native/src/__stubs__/cre
 import { RegistrationScreen } from "./Pages/RegistrationScreen";
 import { AddCarScreen } from "./Pages/AddCarScreen";
 import { GasStationsProvider } from "./Providers/GasStationProvider";
+import {
+    configureReanimatedLogger,
+    ReanimatedLogLevel,
+} from 'react-native-reanimated';
+  
+
+// reanimated config
+configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false, // Reanimated runs in strict mode by default
+});
 
 export const lightTheme = createTheme({
     colors: {
@@ -82,7 +93,6 @@ export const darkTheme = createTheme({
 // Create the drawer and tab navigators
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 // Bottom Tabs Component with dynamic styles
 const BottomTabs = () => {

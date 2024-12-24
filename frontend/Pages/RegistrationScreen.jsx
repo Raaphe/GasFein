@@ -66,16 +66,16 @@ export const RegistrationScreen = ({ navigation }) => {
 
         console.log("Registration successful!");
         try {
-            const res = await register({
+            await register({
                 password: form.password.trim(),
                 firstName: form.firstName.trim(),
                 lastName: form.lastName.trim(),
                 email: form.email.trim(),
                 imageId: "1",
             });
-            console.log(res);
+    
             alert("Registration successful!");
-            nav.navigate("Home"); 
+            nav.navigate("Home");
         } catch (error) {
             console.error("Registration error:", error);
             alert("Registration failed. Please try again.");

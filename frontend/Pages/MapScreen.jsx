@@ -265,6 +265,7 @@ export const MapScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <MapView
+        userInterfaceStyle={isDarkTheme ? "dark" : "light"}
         ref={focusRef}
         style={styles.map}
         initialRegion={{

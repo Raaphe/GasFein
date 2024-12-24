@@ -9,9 +9,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useNavigation} from "@react-navigation/native";
 
 export const CarScreen = () => {
+
     const { isDarkTheme } = useDarkMode();
+    const { authToken, logoutUser } = useAuth();
     const [theme, setTheme] = useState(lightTheme);
-    const { authToken } = useAuth();
     const [cars, setCars] = useState([]);
     const CarClient = new GasFeinApi.CarsApi();
     const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +26,16 @@ export const CarScreen = () => {
         const fetchCars = async () => {
             setIsLoading(true);
             let userId = await AsyncStorage.getItem("user_id");
+            
             CarClient.usersUserIdCarsGet(userId, (err, data, response) => {
-                setCars(response.body)
+                
+                if (response.status !== 200 ) {
+                    logoutUser();
+                    return;
+                }
+
+                console.log("Cars," , response.body);
+                setCars(response.body ?? [])
             })
 
             setIsLoading(false);
@@ -52,10 +61,10 @@ export const CarScreen = () => {
                     >
                         Your Cars
                     </Text>
-                    {cars.length === 0 && (
+                    {cars ?? (
                         <Text>You have no cars added 🙄...</Text>
                     )}
-                    {cars.map((car) => (
+                    {cars?.map((car) => (
                         <Card
                             key={car.id}
                             style={[styles.card, { backgroundColor: theme.colors.surface }]}
@@ -82,7 +91,7 @@ export const CarScreen = () => {
                     <Button
                         mode="contained"
                         style={styles.button}
-                        onPress={() => navigation.navigate("AddCarScreen")}
+                        onPress={() => navigation.navigate("AddCarScre🤥en")}
                     >
                         Add Car
                     </Button>
@@ -92,7 +101,7 @@ export const CarScreen = () => {
                     variant="headlineLarge"
                     style={[styles.header, { color: theme.colors.text }]}
                 >
-                    Please log in to view your cars.
+                    Please log in to view your cars. 
                 </Text>
             )}
         </ScrollView>
