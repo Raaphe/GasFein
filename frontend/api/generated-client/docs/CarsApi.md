@@ -1,6 +1,6 @@
 # GasFeinApi.CarsApi
 
-All URIs are relative to *http://172.20.10.6:3005/api/v1*
+All URIs are relative to *http://172.20.10.3:3005/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
